@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class RealtimeSandroApplication
 
 fun main(args: Array<String>) {
-	runApplication<RealtimeSandroApplication>(*args)
+    runApplication<RealtimeSandroApplication>(*args)
 }
