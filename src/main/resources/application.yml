@@ -1,3 +1,21 @@
 spring:
   application:
     name: realtime-sandro
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:mysql://localhost:3306/realtime_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      multiline: true
+      logging: slf4j
