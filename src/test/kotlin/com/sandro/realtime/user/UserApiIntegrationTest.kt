@@ -3,6 +3,7 @@ package com.sandro.realtime.user
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.sandro.realtime.user.application.dto.UserCreateRequest
 import com.sandro.realtime.user.application.dto.UserUpdateRequest
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -27,6 +28,7 @@ class UserApiIntegrationTest {
     private lateinit var objectMapper: ObjectMapper
 
     @Test
+    @DisplayName("유저 생성 - 정상적으로 유저가 생성되어야 한다")
     fun `should create user successfully`() {
         val request =
             UserCreateRequest(
@@ -48,6 +50,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 생성 - 유효성 검사 실패 시 400 에러가 발생해야 한다")
     fun `should fail to create user when validation fails`() {
         val request =
             UserCreateRequest(
@@ -65,6 +68,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 생성 - 중복된 이메일로 생성 시 409 에러가 발생해야 한다")
     fun `should fail to create user when email already exists`() {
         // 첫 번째 유저 생성
         val firstRequest = UserCreateRequest("홍길동", "duplicate@example.com")
@@ -86,6 +90,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 조회 - 전체 유저 목록을 정상적으로 조회해야 한다")
     fun `should get all users successfully`() {
         val request1 = UserCreateRequest("홍길동", "hong@example.com")
         val request2 = UserCreateRequest("김철수", "kim@example.com")
@@ -110,6 +115,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 조회 - ID로 특정 유저를 정상적으로 조회해야 한다")
     fun `should get user by id successfully`() {
         val request = UserCreateRequest("홍길동", "hong@example.com")
 
@@ -134,6 +140,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 조회 - 존재하지 않는 유저 조회 시 404 에러가 발생해야 한다")
     fun `should fail to get user when user not found`() {
         mockMvc
             .perform(get("/users/999"))
@@ -142,6 +149,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 수정 - 유저 정보를 정상적으로 수정해야 한다")
     fun `should update user successfully`() {
         val createRequest = UserCreateRequest("홍길동", "hong@example.com")
 
@@ -171,6 +179,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 수정 - 존재하지 않는 유저 수정 시 404 에러가 발생해야 한다")
     fun `should fail to update user when user not found`() {
         val updateRequest = UserUpdateRequest("홍길동")
 
@@ -184,6 +193,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 삭제 - 유저를 정상적으로 삭제해야 한다")
     fun `should delete user successfully`() {
         val request = UserCreateRequest("홍길동", "hong@example.com")
 
@@ -209,6 +219,7 @@ class UserApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("유저 삭제 - 존재하지 않는 유저 삭제 시 404 에러가 발생해야 한다")
     fun `should fail to delete user when user not found`() {
         mockMvc
             .perform(delete("/users/999"))
