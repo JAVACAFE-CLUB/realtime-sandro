@@ -1,4 +1,4 @@
-package com.sandro.realtime.user.presentation.controller
+package com.sandro.realtime.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.sandro.realtime.user.application.dto.UserCreateRequest
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
-class UserControllerIntegrationTest {
+class UserApiIntegrationTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -27,7 +27,7 @@ class UserControllerIntegrationTest {
     private lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `유저 생성 - 성공`() {
+    fun `should create user successfully`() {
         val request =
             UserCreateRequest(
                 name = "홍길동",
@@ -48,7 +48,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `유저 생성 - 유효성 검사 실패`() {
+    fun `should fail to create user when validation fails`() {
         val request =
             UserCreateRequest(
                 name = "",
@@ -65,7 +65,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `유저 생성 - 중복된 이메일로 실패`() {
+    fun `should fail to create user when email already exists`() {
         // 첫 번째 유저 생성
         val firstRequest = UserCreateRequest("홍길동", "duplicate@example.com")
         mockMvc.perform(
@@ -86,7 +86,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `전체 유저 조회 - 성공`() {
+    fun `should get all users successfully`() {
         val request1 = UserCreateRequest("홍길동", "hong@example.com")
         val request2 = UserCreateRequest("김철수", "kim@example.com")
 
@@ -110,7 +110,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `특정 유저 조회 - 성공`() {
+    fun `should get user by id successfully`() {
         val request = UserCreateRequest("홍길동", "hong@example.com")
 
         val result =
@@ -134,7 +134,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `특정 유저 조회 - 존재하지 않는 유저`() {
+    fun `should fail to get user when user not found`() {
         mockMvc
             .perform(get("/users/999"))
             .andExpect(status().isNotFound)
@@ -142,7 +142,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `유저 수정 - 성공`() {
+    fun `should update user successfully`() {
         val createRequest = UserCreateRequest("홍길동", "hong@example.com")
 
         val result =
@@ -171,7 +171,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `유저 수정 - 존재하지 않는 유저`() {
+    fun `should fail to update user when user not found`() {
         val updateRequest = UserUpdateRequest("홍길동")
 
         mockMvc
@@ -184,7 +184,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `유저 삭제 - 성공`() {
+    fun `should delete user successfully`() {
         val request = UserCreateRequest("홍길동", "hong@example.com")
 
         val result =
@@ -209,7 +209,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    fun `유저 삭제 - 존재하지 않는 유저`() {
+    fun `should fail to delete user when user not found`() {
         mockMvc
             .perform(delete("/users/999"))
             .andExpect(status().isNotFound)
