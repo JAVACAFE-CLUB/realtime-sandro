@@ -15,6 +15,9 @@ class UserService(
 ) {
     @Transactional
     fun createUser(request: UserCreateRequest): UserResponse {
+        if (userRepository.existsByEmail(request.email))
+            throw RealtimeAppException.userAlreadyExists(request.email)
+
         val savedUser = userRepository.save(request.toEntity())
         return UserResponse.from(savedUser)
     }

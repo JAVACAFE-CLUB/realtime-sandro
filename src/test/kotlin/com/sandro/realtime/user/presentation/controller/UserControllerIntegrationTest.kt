@@ -65,6 +65,27 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    fun `유저 생성 - 중복된 이메일로 실패`() {
+        // 첫 번째 유저 생성
+        val firstRequest = UserCreateRequest("홍길동", "duplicate@example.com")
+        mockMvc.perform(
+            post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(firstRequest)),
+        ).andExpect(status().isCreated)
+
+        // 같은 이메일로 두 번째 유저 생성 시도
+        val secondRequest = UserCreateRequest("김철수", "duplicate@example.com")
+        mockMvc
+            .perform(
+                post("/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(secondRequest)),
+            ).andExpect(status().isConflict)
+            .andExpect(jsonPath("$.code").value("USER_ALREADY_EXISTS"))
+    }
+
+    @Test
     fun `전체 유저 조회 - 성공`() {
         val request1 = UserCreateRequest("홍길동", "hong@example.com")
         val request2 = UserCreateRequest("김철수", "kim@example.com")

@@ -26,6 +26,5 @@ data class User(
 ) {
     fun update(name: String) {
         this.name = name
-        this.email = email
     }
 }
