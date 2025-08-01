@@ -38,7 +38,7 @@ class UserApiIntegrationTest {
 
         mockMvc
             .perform(
-                post("/users")
+                post("/api/v1/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)),
             ).andExpect(status().isCreated)
@@ -60,7 +60,7 @@ class UserApiIntegrationTest {
 
         mockMvc
             .perform(
-                post("/users")
+                post("/api/v1/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)),
             ).andExpect(status().isBadRequest)
@@ -73,7 +73,7 @@ class UserApiIntegrationTest {
         // 첫 번째 유저 생성
         val firstRequest = UserCreateRequest("홍길동", "duplicate@example.com")
         mockMvc.perform(
-            post("/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(firstRequest)),
         ).andExpect(status().isCreated)
@@ -82,7 +82,7 @@ class UserApiIntegrationTest {
         val secondRequest = UserCreateRequest("김철수", "duplicate@example.com")
         mockMvc
             .perform(
-                post("/users")
+                post("/api/v1/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(secondRequest)),
             ).andExpect(status().isConflict)
@@ -96,18 +96,18 @@ class UserApiIntegrationTest {
         val request2 = UserCreateRequest("김철수", "kim@example.com")
 
         mockMvc.perform(
-            post("/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request1)),
         )
         mockMvc.perform(
-            post("/users")
+            post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request2)),
         )
 
         mockMvc
-            .perform(get("/users"))
+            .perform(get("/api/v1/users"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.length()").value(2))
             .andExpect(jsonPath("$[0].name").value("홍길동"))
@@ -122,7 +122,7 @@ class UserApiIntegrationTest {
         val result =
             mockMvc
                 .perform(
-                    post("/users")
+                    post("/api/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isCreated)
@@ -132,7 +132,7 @@ class UserApiIntegrationTest {
         val userId = response.get("id").asLong()
 
         mockMvc
-            .perform(get("/users/$userId"))
+            .perform(get("/api/v1/users/$userId"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(userId))
             .andExpect(jsonPath("$.name").value("홍길동"))
@@ -143,7 +143,7 @@ class UserApiIntegrationTest {
     @DisplayName("유저 조회 - 존재하지 않는 유저 조회 시 404 에러가 발생해야 한다")
     fun `should fail to get user when user not found`() {
         mockMvc
-            .perform(get("/users/999"))
+            .perform(get("/api/v1/users/999"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.code").value("USER_NOT_FOUND"))
     }
@@ -156,7 +156,7 @@ class UserApiIntegrationTest {
         val result =
             mockMvc
                 .perform(
-                    post("/users")
+                    post("/api/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRequest)),
                 ).andExpect(status().isCreated)
@@ -169,7 +169,7 @@ class UserApiIntegrationTest {
 
         mockMvc
             .perform(
-                put("/users/$userId")
+                put("/api/v1/users/$userId")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(updateRequest)),
             ).andExpect(status().isOk)
@@ -185,7 +185,7 @@ class UserApiIntegrationTest {
 
         mockMvc
             .perform(
-                put("/users/999")
+                put("/api/v1/users/999")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(updateRequest)),
             ).andExpect(status().isNotFound)
@@ -200,7 +200,7 @@ class UserApiIntegrationTest {
         val result =
             mockMvc
                 .perform(
-                    post("/users")
+                    post("/api/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isCreated)
@@ -210,11 +210,11 @@ class UserApiIntegrationTest {
         val userId = response.get("id").asLong()
 
         mockMvc
-            .perform(delete("/users/$userId"))
+            .perform(delete("/api/v1/users/$userId"))
             .andExpect(status().isNoContent)
 
         mockMvc
-            .perform(get("/users/$userId"))
+            .perform(get("/api/v1/users/$userId"))
             .andExpect(status().isNotFound)
     }
 
@@ -222,7 +222,7 @@ class UserApiIntegrationTest {
     @DisplayName("유저 삭제 - 존재하지 않는 유저 삭제 시 404 에러가 발생해야 한다")
     fun `should fail to delete user when user not found`() {
         mockMvc
-            .perform(delete("/users/999"))
+            .perform(delete("/api/v1/users/999"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.code").value("USER_NOT_FOUND"))
     }
