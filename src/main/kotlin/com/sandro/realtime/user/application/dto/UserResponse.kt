@@ -13,11 +13,11 @@ data class UserResponse(
     companion object {
         fun from(user: User): UserResponse =
             UserResponse(
-                id = user.id,
+                id = user.id!!,
                 name = user.name,
                 email = user.email,
-                createdAt = user.createdAt,
-                updatedAt = user.updatedAt,
+                createdAt = user.createdAt!!,
+                updatedAt = user.updatedAt!!,
             )
     }
 }

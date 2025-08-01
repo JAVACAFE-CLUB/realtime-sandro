@@ -1,29 +1,18 @@
 package com.sandro.realtime.user.domain.model
 
-import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
+import com.sandro.realtime.shared.domain.BaseAuditEntity
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener::class)
-data class User(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+class User(
     @Column(nullable = false)
     var name: String,
     @Column(nullable = false, unique = true)
     var email: String,
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
-    @LastModifiedDate
-    @Column(nullable = false)
-    var updatedAt: LocalDateTime = LocalDateTime.now(),
-) {
+) : BaseAuditEntity() {
     fun update(name: String) {
         this.name = name
     }
