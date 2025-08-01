@@ -1,4 +1,4 @@
-package com.sandro.realtime.domain
+package com.sandro.realtime.user.domain.model
 
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -23,4 +23,9 @@ data class User(
     @LastModifiedDate
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now(),
-)
+) {
+    fun update(name: String) {
+        this.name = name
+        this.email = email
+    }
+}

@@ -1,9 +1,9 @@
-package com.sandro.realtime.controller
+package com.sandro.realtime.user.presentation.controller
 
-import com.sandro.realtime.dto.UserCreateRequest
-import com.sandro.realtime.dto.UserResponse
-import com.sandro.realtime.dto.UserUpdateRequest
-import com.sandro.realtime.service.UserService
+import com.sandro.realtime.user.application.dto.UserCreateRequest
+import com.sandro.realtime.user.application.dto.UserResponse
+import com.sandro.realtime.user.application.dto.UserUpdateRequest
+import com.sandro.realtime.user.application.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

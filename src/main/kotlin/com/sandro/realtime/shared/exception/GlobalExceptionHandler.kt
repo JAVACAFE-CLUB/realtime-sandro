@@ -1,4 +1,4 @@
-package com.sandro.realtime.exception
+package com.sandro.realtime.shared.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
-    @ExceptionHandler(UserNotFoundException::class)
-    fun handleUserNotFoundException(ex: UserNotFoundException): ResponseEntity<ErrorResponse> {
+    @ExceptionHandler(RealtimeAppException::class)
+    fun handleBusinessException(ex: RealtimeAppException): ResponseEntity<ErrorResponse> {
         val errorResponse =
             ErrorResponse(
-                code = "USER_NOT_FOUND",
-                message = ex.message ?: "User not found",
+                code = ex.errorCode.code,
+                message = ex.message ?: ex.errorCode.message,
             )
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse)
+        return ResponseEntity.status(ex.errorCode.httpStatus).body(errorResponse)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)

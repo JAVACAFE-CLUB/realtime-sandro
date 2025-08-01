@@ -1,4 +1,4 @@
-package com.sandro.realtime.config
+package com.sandro.realtime.shared.config
 
 import com.p6spy.engine.logging.Category
 import com.p6spy.engine.spy.P6SpyOptions

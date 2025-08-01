@@ -1,8 +1,8 @@
-package com.sandro.realtime.controller
+package com.sandro.realtime.user.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.sandro.realtime.dto.UserCreateRequest
-import com.sandro.realtime.dto.UserUpdateRequest
+import com.sandro.realtime.user.application.dto.UserCreateRequest
+import com.sandro.realtime.user.application.dto.UserUpdateRequest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -136,7 +136,7 @@ class UserControllerIntegrationTest {
         val response = objectMapper.readTree(result.response.contentAsString)
         val userId = response.get("id").asLong()
 
-        val updateRequest = UserUpdateRequest("홍길동수정", "updated@example.com")
+        val updateRequest = UserUpdateRequest("홍길동수정")
 
         mockMvc
             .perform(
@@ -146,12 +146,12 @@ class UserControllerIntegrationTest {
             ).andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(userId))
             .andExpect(jsonPath("$.name").value("홍길동수정"))
-            .andExpect(jsonPath("$.email").value("updated@example.com"))
+            .andExpect(jsonPath("$.email").value("hong@example.com"))
     }
 
     @Test
     fun `유저 수정 - 존재하지 않는 유저`() {
-        val updateRequest = UserUpdateRequest("홍길동", "hong@example.com")
+        val updateRequest = UserUpdateRequest("홍길동")
 
         mockMvc
             .perform(

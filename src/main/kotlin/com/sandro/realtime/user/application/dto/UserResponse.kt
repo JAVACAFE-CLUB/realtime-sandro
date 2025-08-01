@@ -1,6 +1,6 @@
-package com.sandro.realtime.dto
+package com.sandro.realtime.user.application.dto
 
-import com.sandro.realtime.domain.User
+import com.sandro.realtime.user.domain.model.User
 import java.time.LocalDateTime
 
 data class UserResponse(
