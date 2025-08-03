@@ -11,12 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(RealtimeAppException::class)
     fun handleBusinessException(ex: RealtimeAppException): ResponseEntity<ErrorResponse> {
-        val errorResponse =
-            ErrorResponse(
-                code = ex.errorCode.code,
-                message = ex.message ?: ex.errorCode.message,
-            )
-        return ResponseEntity.status(ex.errorCode.httpStatus).body(errorResponse)
+        val errorResponse = ErrorResponse(message = ex.message)
+        return ResponseEntity.status(ex.httpStatus).body(errorResponse)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
@@ -28,28 +24,15 @@ class GlobalExceptionHandler {
                 "$fieldName: $errorMessage"
             }
 
-        val errorResponse =
-            ErrorResponse(
-                code = "VALIDATION_ERROR",
-                message = "Validation failed",
-                details = errors,
-            )
+        val errorResponse = ErrorResponse(message = errors.toString())
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
     }
 
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<ErrorResponse> {
-        val errorResponse =
-            ErrorResponse(
-                code = "INTERNAL_ERROR",
-                message = "Internal server error",
-            )
+        val errorResponse = ErrorResponse(message = "Internal server error")
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse)
     }
 }
 
-data class ErrorResponse(
-    val code: String,
-    val message: String,
-    val details: List<String>? = null,
-)
+data class ErrorResponse(val message: String)
