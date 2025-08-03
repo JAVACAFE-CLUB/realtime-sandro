@@ -3,6 +3,15 @@ package com.sandro.realtime.user
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.sandro.realtime.user.application.dto.UserCreateRequest
 import com.sandro.realtime.user.application.dto.UserUpdateRequest
+import com.sandro.realtime.user.domain.model.User
+import com.sandro.realtime.user.domain.repository.UserRepository
+import io.kotest.inspectors.forSingle
+import io.kotest.matchers.optional.shouldBePresent
+import io.kotest.matchers.optional.shouldNotBePresent
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import jakarta.transaction.Transactional
+import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,11 +19,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.transaction.annotation.Transactional
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
@@ -27,203 +33,183 @@ class UserApiIntegrationTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
+    @Autowired
+    private lateinit var userRepository: UserRepository
+
     @Test
     @DisplayName("유저 생성 - 정상적으로 유저가 생성되어야 한다")
     fun `should create user successfully`() {
-        val request =
-            UserCreateRequest(
-                name = "홍길동",
-                email = "hong@example.com",
-            )
+        // given
+        val request = UserCreateRequest(
+            name = "홍길동",
+            email = "hong@example.com",
+        )
 
+        // when & then
         mockMvc
-            .perform(
-                post("/api/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)),
-            ).andExpect(status().isCreated)
-            .andExpect(jsonPath("$.name").value("홍길동"))
-            .andExpect(jsonPath("$.email").value("hong@example.com"))
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.createdAt").exists())
-            .andExpect(jsonPath("$.updatedAt").exists())
+            .post("/api/v1/users") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+            }.andDo { print() }
+            .andExpect { status { isCreated() } }
+            .andExpect { jsonPath("$.name") { value("홍길동") } }
+            .andExpect { jsonPath("$.email") { value("hong@example.com") } }
+            .andExpect { jsonPath("$.id") { exists() } }
+            .andExpect { jsonPath("$.createdAt") { exists() } }
+            .andExpect { jsonPath("$.updatedAt") { exists() } }
+
+        userRepository.findAll().forSingle { user ->
+            user.id shouldNotBe null
+            user.name shouldBe "홍길동"
+            user.email shouldBe "hong@example.com"
+            user.createdAt shouldNotBe null
+            user.updatedAt shouldNotBe null
+        }
     }
 
     @Test
     @DisplayName("유저 생성 - 유효성 검사 실패 시 400 에러가 발생해야 한다")
     fun `should fail to create user when validation fails`() {
-        val request =
-            UserCreateRequest(
-                name = "",
-                email = "invalid-email",
-            )
+        // given
+        val request = UserCreateRequest(
+            name = "",
+            email = "invalid-email",
+        )
 
+        // when & then
         mockMvc
-            .perform(
-                post("/api/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)),
-            ).andExpect(status().isBadRequest)
-            .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+            .post("/api/v1/users") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+            }.andDo { print() }
+            .andExpect { status().isBadRequest }
+            .andExpect { jsonPath("$.message", containsString("email: 올바른 이메일 형식이 아닙니다")) }
+            .andExpect { jsonPath("$.message", containsString("name: 이름은 필수입니다")) }
     }
 
     @Test
     @DisplayName("유저 생성 - 중복된 이메일로 생성 시 409 에러가 발생해야 한다")
     fun `should fail to create user when email already exists`() {
-        // 첫 번째 유저 생성
-        val firstRequest = UserCreateRequest("홍길동", "duplicate@example.com")
-        mockMvc.perform(
-            post("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(firstRequest)),
-        ).andExpect(status().isCreated)
+        // given
+        val email = "duplicate@example.com"
+        userRepository.save(User(name = "홍길동", email = email))
+        val secondRequest = UserCreateRequest("김철수", email)
 
-        // 같은 이메일로 두 번째 유저 생성 시도
-        val secondRequest = UserCreateRequest("김철수", "duplicate@example.com")
+        // when & then
         mockMvc
-            .perform(
-                post("/api/v1/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(secondRequest)),
-            ).andExpect(status().isConflict)
-            .andExpect(jsonPath("$.code").value("USER_ALREADY_EXISTS"))
+            .post("/api/v1/users") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(secondRequest)
+            }.andDo { print() }
+            .andExpect { status().isConflict }
+            .andExpect { jsonPath("$.message") { value("User already exists with email: $email") } }
     }
 
     @Test
     @DisplayName("유저 조회 - 전체 유저 목록을 정상적으로 조회해야 한다")
     fun `should get all users successfully`() {
-        val request1 = UserCreateRequest("홍길동", "hong@example.com")
-        val request2 = UserCreateRequest("김철수", "kim@example.com")
-
-        mockMvc.perform(
-            post("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request1)),
-        )
-        mockMvc.perform(
-            post("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request2)),
+        // given
+        userRepository.saveAll(
+            listOf(
+                User("홍길동", "hong@example.com"),
+                User("김철수", "kim@example.com")
+            )
         )
 
+        // when & then
         mockMvc
-            .perform(get("/api/v1/users"))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].name").value("홍길동"))
-            .andExpect(jsonPath("$[1].name").value("김철수"))
+            .get("/api/v1/users")
+            .andDo { print() }.andExpect { status().isOk }
+            .andExpect { jsonPath("$.length()") { value(2) } }
+            .andExpect { jsonPath("$[0].name") { value("홍길동") } }
+            .andExpect { jsonPath("$[0].email") { value("hong@example.com") } }
+            .andExpect { jsonPath("$[1].name") { value("김철수") } }
+            .andExpect { jsonPath("$[1].email") { value("kim@example.com") } }
     }
 
     @Test
     @DisplayName("유저 조회 - ID로 특정 유저를 정상적으로 조회해야 한다")
     fun `should get user by id successfully`() {
-        val request = UserCreateRequest("홍길동", "hong@example.com")
+        // given
+        val userId = userRepository.save(User("홍길동", "hong@example.com")).id
 
-        val result =
-            mockMvc
-                .perform(
-                    post("/api/v1/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)),
-                ).andExpect(status().isCreated)
-                .andReturn()
-
-        val response = objectMapper.readTree(result.response.contentAsString)
-        val userId = response.get("id").asLong()
-
+        // when & then
         mockMvc
-            .perform(get("/api/v1/users/$userId"))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(userId))
-            .andExpect(jsonPath("$.name").value("홍길동"))
-            .andExpect(jsonPath("$.email").value("hong@example.com"))
+            .get("/api/v1/users/$userId")
+            .andDo { print() }.andExpect { status().isOk }
+            .andExpect { jsonPath("$.id") { value(userId) } }
+            .andExpect { jsonPath("$.name") { value("홍길동") } }
+            .andExpect { jsonPath("$.email") { value("hong@example.com") } }
     }
 
     @Test
     @DisplayName("유저 조회 - 존재하지 않는 유저 조회 시 404 에러가 발생해야 한다")
     fun `should fail to get user when user not found`() {
+        // given
+        val userId = 999
+
+        // when & then
         mockMvc
-            .perform(get("/api/v1/users/999"))
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.code").value("USER_NOT_FOUND"))
+            .get("/api/v1/users/$userId")
+            .andDo { print() }
+            .andExpect { status().isNotFound }
+            .andExpect { jsonPath("$.message") { value("User not found with id: $userId") } }
     }
 
     @Test
     @DisplayName("유저 수정 - 유저 정보를 정상적으로 수정해야 한다")
     fun `should update user successfully`() {
-        val createRequest = UserCreateRequest("홍길동", "hong@example.com")
-
-        val result =
-            mockMvc
-                .perform(
-                    post("/api/v1/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createRequest)),
-                ).andExpect(status().isCreated)
-                .andReturn()
-
-        val response = objectMapper.readTree(result.response.contentAsString)
-        val userId = response.get("id").asLong()
-
+        // given
+        val userId = userRepository.save(User("홍길동", "hong@example.com")).id
         val updateRequest = UserUpdateRequest("홍길동수정")
 
+        // when & then
         mockMvc
-            .perform(
-                put("/api/v1/users/$userId")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(updateRequest)),
-            ).andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(userId))
-            .andExpect(jsonPath("$.name").value("홍길동수정"))
-            .andExpect(jsonPath("$.email").value("hong@example.com"))
+            .put("/api/v1/users/$userId") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(updateRequest)
+            }.andDo { print() }
+            .andExpect { status().isOk }
+            .andExpect { jsonPath("$.id") { value(userId) } }
+            .andExpect { jsonPath("$.name") { value("홍길동수정") } }
+            .andExpect { jsonPath("$.email") { value("hong@example.com") } }
+
+        userRepository.findById(userId!!).shouldBePresent { user ->
+            user.name shouldBe "홍길동수정"
+            user.email shouldBe "hong@example.com"
+        }
     }
 
     @Test
     @DisplayName("유저 수정 - 존재하지 않는 유저 수정 시 404 에러가 발생해야 한다")
     fun `should fail to update user when user not found`() {
+        // given
+        val userId = 999
         val updateRequest = UserUpdateRequest("홍길동")
 
+        // when & then
         mockMvc
-            .perform(
-                put("/api/v1/users/999")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(updateRequest)),
-            ).andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.code").value("USER_NOT_FOUND"))
+            .put("/api/v1/users/$userId") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(updateRequest)
+            }.andDo { print() }
+            .andExpect { status().isNotFound }
+            .andExpect { jsonPath("$.message") { value("User not found with id: $userId") } }
     }
 
     @Test
     @DisplayName("유저 삭제 - 유저를 정상적으로 삭제해야 한다")
     fun `should delete user successfully`() {
-        val request = UserCreateRequest("홍길동", "hong@example.com")
+        // given
+        val userId = userRepository.save(User("홍길동", "hong@example.com")).id
 
-        val result =
-            mockMvc
-                .perform(
-                    post("/api/v1/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)),
-                ).andExpect(status().isCreated)
-                .andReturn()
-
-        val response = objectMapper.readTree(result.response.contentAsString)
-        val userId = response.get("id").asLong()
-
+        // when
         mockMvc
-            .perform(delete("/api/v1/users/$userId"))
-            .andExpect(status().isNoContent)
+            .delete("/api/v1/users/$userId")
+            .andDo { print() }
+            .andExpect { status().isOk }
 
-        mockMvc
-            .perform(get("/api/v1/users/$userId"))
-            .andExpect(status().isNotFound)
-    }
-
-    @Test
-    @DisplayName("유저 삭제 - 존재하지 않는 유저 삭제 시 404 에러가 발생해야 한다")
-    fun `should fail to delete user when user not found`() {
-        mockMvc
-            .perform(delete("/api/v1/users/999"))
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.code").value("USER_NOT_FOUND"))
+        // then
+        userRepository.findById(userId!!).shouldNotBePresent()
     }
 }

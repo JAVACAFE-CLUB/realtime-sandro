@@ -13,6 +13,7 @@ class User(
     @Column(nullable = false, unique = true)
     var email: String,
 ) : BaseAuditEntity() {
+
     fun update(name: String) {
         this.name = name
     }

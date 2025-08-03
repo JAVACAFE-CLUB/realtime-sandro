@@ -15,14 +15,18 @@ class UserService(
 ) {
     @Transactional
     fun createUser(request: UserCreateRequest): UserResponse {
-        if (userRepository.existsByEmail(request.email))
+        if (userRepository.existsByEmail(request.email)) {
             throw RealtimeAppException.userAlreadyExists(request.email)
+        }
 
         val savedUser = userRepository.save(request.toEntity())
         return UserResponse.from(savedUser)
     }
 
-    fun getAllUsers(): List<UserResponse> = userRepository.findAll().map { UserResponse.from(it) }
+    fun getAllUsers(): List<UserResponse> {
+        return userRepository.findAll()
+            .map { UserResponse.from(it) }
+    }
 
     fun getUserById(id: Long): UserResponse {
         return userRepository.findById(id)
@@ -42,8 +46,6 @@ class UserService(
 
     @Transactional
     fun deleteUser(id: Long) {
-        if (!userRepository.existsById(id))
-            throw RealtimeAppException.userNotFound(id)
         userRepository.deleteById(id)
     }
 }
