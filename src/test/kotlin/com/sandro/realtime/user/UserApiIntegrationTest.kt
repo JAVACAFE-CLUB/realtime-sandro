@@ -2,10 +2,14 @@ package com.sandro.realtime.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.navercorp.fixturemonkey.FixtureMonkey
-import com.navercorp.fixturemonkey.kotlin.giveMeBuilder
-import com.navercorp.fixturemonkey.kotlin.setExp
+import com.navercorp.fixturemonkey.api.introspector.ConstructorPropertiesArbitraryIntrospector
+import com.navercorp.fixturemonkey.jackson.plugin.JacksonPlugin
+import com.navercorp.fixturemonkey.jakarta.validation.plugin.JakartaValidationPlugin
+import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
+import com.navercorp.fixturemonkey.kotlin.giveMeKotlinBuilder
 import com.sandro.realtime.user.application.dto.UserCreateRequest
 import com.sandro.realtime.user.application.dto.UserUpdateRequest
+import com.sandro.realtime.user.domain.model.User
 import com.sandro.realtime.user.domain.repository.UserRepository
 import io.kotest.inspectors.forSingle
 import io.kotest.matchers.optional.shouldBePresent
@@ -38,8 +42,10 @@ class UserApiIntegrationTest {
     private lateinit var userRepository: UserRepository
 
     private val fixtureMonkey = FixtureMonkey.builder()
-        .plugin(com.navercorp.fixturemonkey.kotlin.KotlinPlugin())
-        .plugin(com.navercorp.fixturemonkey.jackson.plugin.JacksonPlugin())
+        .objectIntrospector(ConstructorPropertiesArbitraryIntrospector.INSTANCE)
+        .plugin(KotlinPlugin())
+        .plugin(JacksonPlugin())
+        .plugin(JakartaValidationPlugin())
         .build()
 
     @Test
@@ -74,10 +80,8 @@ class UserApiIntegrationTest {
     @DisplayName("유저 생성 - 중복된 이메일로 생성 시 409 에러가 발생해야 한다")
     fun `should fail to create user when email already exists`() {
         // given
-        val existingUserRequest = createValidUserRequest()
-        val existingUser = userRepository.save(existingUserRequest.toEntity())
-        val duplicateRequest = fixtureMonkey.giveMeBuilder<UserCreateRequest>()
-            .setExp(UserCreateRequest::name, "김철수")
+        val existingUser = userRepository.save(createValidUser())
+        val duplicateRequest = fixtureMonkey.giveMeKotlinBuilder<UserCreateRequest>()
             .setExp(UserCreateRequest::email, existingUser.email)
             .sample()
 
@@ -95,14 +99,10 @@ class UserApiIntegrationTest {
     @DisplayName("유저 조회 - 전체 유저 목록을 정상적으로 조회해야 한다")
     fun `should get all users successfully`() {
         // given
-        val userRequests = listOf(
-            createValidUserRequest(),
-            fixtureMonkey.giveMeBuilder<UserCreateRequest>()
-                .setExp(UserCreateRequest::name, "김철수")
-                .setExp(UserCreateRequest::email, "kim@example.com")
-                .sample()
+        val users = listOf(
+            createValidUser(),
+            createValidUser()
         )
-        val users = userRequests.map { it.toEntity() }
         userRepository.saveAll(users)
 
         // when & then
@@ -110,26 +110,25 @@ class UserApiIntegrationTest {
             .get("/api/v1/users")
             .andDo { print() }.andExpect { status().isOk }
             .andExpect { jsonPath("$.length()") { value(2) } }
-            .andExpect { jsonPath("$[0].name") { value(userRequests[0].name) } }
-            .andExpect { jsonPath("$[0].email") { value(userRequests[0].email) } }
-            .andExpect { jsonPath("$[1].name") { value(userRequests[1].name) } }
-            .andExpect { jsonPath("$[1].email") { value(userRequests[1].email) } }
+            .andExpect { jsonPath("$[0].name") { value(users[0].name) } }
+            .andExpect { jsonPath("$[0].email") { value(users[0].email) } }
+            .andExpect { jsonPath("$[1].name") { value(users[1].name) } }
+            .andExpect { jsonPath("$[1].email") { value(users[1].email) } }
     }
 
     @Test
     @DisplayName("유저 조회 - ID로 특정 유저를 정상적으로 조회해야 한다")
     fun `should get user by id successfully`() {
         // given
-        val userRequest = createValidUserRequest()
-        val userId = userRepository.save(userRequest.toEntity()).id
+        val savedUser = userRepository.save(createValidUser())
 
         // when & then
         mockMvc
-            .get("/api/v1/users/$userId")
+            .get("/api/v1/users/${savedUser.id}")
             .andDo { print() }.andExpect { status().isOk }
-            .andExpect { jsonPath("$.id") { value(userId) } }
-            .andExpect { jsonPath("$.name") { value(userRequest.name) } }
-            .andExpect { jsonPath("$.email") { value(userRequest.email) } }
+            .andExpect { jsonPath("$.id") { value(savedUser.id) } }
+            .andExpect { jsonPath("$.name") { value(savedUser.name) } }
+            .andExpect { jsonPath("$.email") { value(savedUser.email) } }
     }
 
     @Test
@@ -150,27 +149,23 @@ class UserApiIntegrationTest {
     @DisplayName("유저 수정 - 유저 정보를 정상적으로 수정해야 한다")
     fun `should update user successfully`() {
         // given
-        val userRequest = createValidUserRequest()
-        val savedUser = userRepository.save(userRequest.toEntity())
-        val userId = savedUser.id
-        val updateRequest = fixtureMonkey.giveMeBuilder<UserUpdateRequest>()
-            .setExp(UserUpdateRequest::name, "홍길동수정")
-            .sample()
+        val savedUser = userRepository.save(createValidUser())
+        val updateRequest = fixtureMonkey.giveMeOne(UserUpdateRequest::class.java)
 
         // when & then
         mockMvc
-            .put("/api/v1/users/$userId") {
+            .put("/api/v1/users/${savedUser.id}") {
                 contentType = MediaType.APPLICATION_JSON
                 content = objectMapper.writeValueAsString(updateRequest)
             }.andDo { print() }
             .andExpect { status().isOk }
-            .andExpect { jsonPath("$.id") { value(userId) } }
+            .andExpect { jsonPath("$.id") { value(savedUser.id) } }
             .andExpect { jsonPath("$.name") { value(updateRequest.name) } }
-            .andExpect { jsonPath("$.email") { value(userRequest.email) } }
+            .andExpect { jsonPath("$.email") { value(savedUser.email) } }
 
-        userRepository.findById(userId!!).shouldBePresent { user ->
+        userRepository.findById(savedUser.id!!).shouldBePresent { user ->
             user.name shouldBe updateRequest.name
-            user.email shouldBe userRequest.email
+            user.email shouldBe savedUser.email
         }
     }
 
@@ -179,9 +174,7 @@ class UserApiIntegrationTest {
     fun `should fail to update user when user not found`() {
         // given
         val userId = 999
-        val updateRequest = fixtureMonkey.giveMeBuilder<UserUpdateRequest>()
-            .setExp(UserUpdateRequest::name, "홍길동")
-            .sample()
+        val updateRequest = fixtureMonkey.giveMeOne(UserUpdateRequest::class.java)
 
         // when & then
         mockMvc
@@ -197,8 +190,7 @@ class UserApiIntegrationTest {
     @DisplayName("유저 삭제 - 유저를 정상적으로 삭제해야 한다")
     fun `should delete user successfully`() {
         // given
-        val userRequest = createValidUserRequest()
-        val userId = userRepository.save(userRequest.toEntity()).id
+        val userId = userRepository.save(createValidUser()).id
 
         // when
         mockMvc
@@ -210,13 +202,12 @@ class UserApiIntegrationTest {
         userRepository.findById(userId!!).shouldNotBePresent()
     }
 
+    private fun createValidUser(): User {
+        return createValidUserRequest().toEntity()
+    }
+
     private fun createValidUserRequest(): UserCreateRequest {
-        val baseRequest = fixtureMonkey.giveMeBuilder<UserCreateRequest>().sample()
-        val safeName = baseRequest.name.take(20).ifBlank { "TestUser" }
-        return baseRequest.copy(
-            name = safeName,
-            email = "${safeName.lowercase().replace(" ", "")}@example.com"
-        )
+        return fixtureMonkey.giveMeOne(UserCreateRequest::class.java)
     }
 
 }

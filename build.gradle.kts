@@ -40,9 +40,9 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
     testImplementation("io.kotest:kotest-property:5.8.0") // Property-based testing이 필요한 경우
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
-    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:1.0.23")
-    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jackson:1.0.23")
-
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:1.1.14")
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jackson:1.1.14")
+    testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jakarta-validation:1.1.14")
 }
 
 kotlin {
