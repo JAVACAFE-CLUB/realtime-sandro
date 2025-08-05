@@ -8,4 +8,4 @@
 ~~- Fixture Monkey 적용하기~~
 
 ~~- Swagger 붙이기~~
-- PR 템플릿 적용
+~~- PR 템플릿 적용~~
