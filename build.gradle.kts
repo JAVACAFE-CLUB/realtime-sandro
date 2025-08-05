@@ -29,6 +29,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
