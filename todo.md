@@ -5,3 +5,4 @@
 
 ~~- 테스트 이름 수정. controller 통합테스트는 좀 이상한듯.~~
   ~~- 엔티티의 auditing 필드는 공통 클래스로 빼기~~
+~~- Fixture Monkey 적용하기~~
