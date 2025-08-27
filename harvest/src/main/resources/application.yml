@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: harvest
+  profiles:
+    active: dev
+  
+  # 카프카 설정
+#  kafka:
+#    producer:
+#      bootstrap-servers: localhost:9092
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      properties:
+#        max.request.size: 1048576  # 1MB
+#        batch.size: 16384
+#        linger.ms: 5
+#        compression.type: lz4
+#        retries: 3
+#        acks: all
+
+server:
+  port: 8080
+
+# 모니터링 설정
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#  metrics:
+#    export:
+#      prometheus:
+#        enabled: true
+
+# Harvest 모듈 설정
+harvest:
+  description: "대용량 파일 수집 시스템 - 수확기"
+  version: 1.0.0
+  
+  # 파일 처리 설정
+  file-processor:
+    chunk-size: 1048576  # 1MB
+    batch-size: 100      # 배치 단위
+    retry-attempts: 3    # 재시도 횟수
+    checkpoint-interval: 1000  # 체크포인트 주기 (페이지 수)
+
+  # 카프카 토픽 설정
+  kafka:
+    topic: "wiki-pages-raw"
+    partitions: 3
+    replication-factor: 1  # 개발 환경용
