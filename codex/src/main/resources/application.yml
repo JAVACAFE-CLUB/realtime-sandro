@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: codex
+  profiles:
+    active: dev
+
+server:
+  port: 8082
+
+# Codex 모듈 설정
+codex:
+  description: "색인 시스템 - 고문서"
+  version: 1.0.0
+  indexing:
+    batch-size: 100
+    thread-pool-size: 5

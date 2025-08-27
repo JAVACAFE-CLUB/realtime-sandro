@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: smithy
+  profiles:
+    active: dev
+
+server:
+  port: 8081
+
+# Smithy 모듈 설정
+smithy:
+  description: "데이터 정제 시스템 - 대장간"
+  version: 1.0.0
