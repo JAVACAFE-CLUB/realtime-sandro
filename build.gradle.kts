@@ -40,25 +40,20 @@ subprojects {
 
         // Spring Boot
         implementation("org.springframework.boot:spring-boot-starter-web")
-//        implementation("org.springframework.boot:spring-boot-starter-data-jpa")
         implementation("org.springframework.boot:spring-boot-starter-validation")
 
         // Coroutines
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-        // Database
-//        runtimeOnly("com.mysql:mysql-connector-j")
-//        implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
-
         // API Documentation
-        implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+//        implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
         // Testing
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-        testImplementation("org.testcontainers:junit-jupiter")
-        testImplementation("org.testcontainers:mysql")
+//        testImplementation("org.testcontainers:junit-jupiter")
+//        testImplementation("org.testcontainers:mysql")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
         testImplementation("io.kotest:kotest-assertions-core:5.8.0")
