@@ -1,51 +1,45 @@
-spring:
-  application:
-    name: harvest
-  profiles:
-    active: dev
-  
-  # 카프카 설정
-#  kafka:
-#    producer:
-#      bootstrap-servers: localhost:9092
-#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      properties:
-#        max.request.size: 1048576  # 1MB
-#        batch.size: 16384
-#        linger.ms: 5
-#        compression.type: lz4
-#        retries: 3
-#        acks: all
-
 server:
   port: 8080
 
-# 모니터링 설정
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
-#  metrics:
-#    export:
-#      prometheus:
-#        enabled: true
+spring:
+  application:
+    name: harvest
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/harvest_db?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: realtime
+    password: realtime1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    show-sql: true
+
+  batch:
+    job:
+      enabled: false  # 애플리케이션 시작 시 자동 실행 방지
+    jdbc:
+      initialize-schema: always  # 수동으로 테이블 생성하므로 비활성화
 
 # Harvest 모듈 설정
 harvest:
-  description: "대용량 파일 수집 시스템 - 수확기"
-  version: 1.0.0
-  
-  # 파일 처리 설정
-  file-processor:
-    chunk-size: 1048576  # 1MB
-    batch-size: 100      # 배치 단위
-    retry-attempts: 3    # 재시도 횟수
-    checkpoint-interval: 1000  # 체크포인트 주기 (페이지 수)
 
-  # 카프카 토픽 설정
-  kafka:
-    topic: "wiki-pages-raw"
-    partitions: 3
-    replication-factor: 1  # 개발 환경용
+  # 파일 처리 설정
+  file:
+    # 대용량 파일이 저장된 외부 경로
+    base-path: ~/bigdata
+    
+    # 처리할 파일 목록
+    sources:
+      - name: kowiki
+        file-name: kowiki-20250820-pages-articles-multistream1.xml
+        enabled: true
+    
+    # 처리 옵션
+    chunk-size: 1048576  # 1MB
+    encoding: UTF-8
