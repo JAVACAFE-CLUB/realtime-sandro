@@ -1,7 +1,4 @@
 spring:
-  output:
-    ansi:
-      enabled: always
   datasource:
     url: jdbc:tc:mysql:8.0.29:///test
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver

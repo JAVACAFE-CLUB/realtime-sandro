@@ -13,3 +13,8 @@
 - 크롤링
 
 - X API 연동
+
+- docker 설정 
+  - MinIO
+  - 카프카
+  - ES
