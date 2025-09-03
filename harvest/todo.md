@@ -1,0 +1,1 @@
+- minio region 설정?

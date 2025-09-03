@@ -7,4 +7,7 @@ dependencies = [
     "boto3>=1.40.22",
     "confluent-kafka>=2.11.1",
     "newspaper3k>=0.2.8",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
 ]
