@@ -9,11 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 프로젝트 루트를 Python 경로에 추가
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent
 src_path = project_root / "src"
 sys.path.insert(0, str(src_path))
 
-from harvest.minio_uploader import MinIOUploader
+from harvest.services.minio_service import MinIOService
 
 
 def test_minio_connection():
@@ -22,12 +22,12 @@ def test_minio_connection():
     
     try:
         # MinIO 업로더 초기화
-        uploader = MinIOUploader()
+        uploader = MinIOService()
         print("✅ MinIO 클라이언트 초기화 성공")
         
         # 테스트 버킷 생성
         test_bucket = "test-bucket"
-        if uploader.create_bucket_if_not_exists(test_bucket):
+        if uploader.ensure_bucket_exists(test_bucket):
             print(f"✅ 버킷 '{test_bucket}' 생성/확인 성공")
         else:
             print(f"❌ 버킷 '{test_bucket}' 생성 실패")

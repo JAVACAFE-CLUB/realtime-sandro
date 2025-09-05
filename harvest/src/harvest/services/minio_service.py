@@ -3,13 +3,13 @@
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Callable, Dict, Any
+from typing import Optional, Callable, Dict, Any, List
 
 import boto3
 from boto3.s3.transfer import TransferConfig
 from botocore.exceptions import ClientError, NoCredentialsError
 
-from .settings import settings
+from ..core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -29,8 +29,8 @@ class UploadProgress:
         return (self.bytes_transferred / self.total_bytes) * 100
 
 
-class MinIOUploader:
-    """boto3를 사용한 MinIO 업로더 클래스"""
+class MinIOService:
+    """boto3를 사용한 MinIO 서비스 클래스"""
 
     def __init__(
             self,
@@ -40,7 +40,7 @@ class MinIOUploader:
             region_name: Optional[str] = None
     ):
         """
-        MinIO 업로더 초기화
+        MinIO 서비스 초기화
         
         Args:
             endpoint_url: MinIO 서버 엔드포인트 (None인 경우 설정에서 읽음)
@@ -70,7 +70,7 @@ class MinIOUploader:
             logger.error(f"MinIO 클라이언트 초기화 실패: {e}")
             raise
 
-    def create_bucket_if_not_exists(self, bucket_name: str) -> bool:
+    def ensure_bucket_exists(self, bucket_name: str) -> bool:
         """
         버킷이 존재하지 않으면 생성
         
@@ -129,7 +129,7 @@ class MinIOUploader:
             object_key = file_path.name
 
         # 버킷 생성 확인
-        if not self.create_bucket_if_not_exists(bucket_name):
+        if not self.ensure_bucket_exists(bucket_name):
             return False
 
         # 파일 크기 확인
@@ -175,7 +175,7 @@ class MinIOUploader:
             logger.error(f"예상치 못한 오류: {e}")
             return False
 
-    def list_objects(self, bucket_name: str, prefix: str = "") -> list:
+    def list_objects(self, bucket_name: str, prefix: str = "") -> List[str]:
         """
         버킷의 객체 목록 조회
         
@@ -247,3 +247,25 @@ class MinIOUploader:
             else:
                 logger.error(f"객체 정보 조회 실패: {e}")
                 return None
+
+    def list_buckets(self) -> List[Dict[str, Any]]:
+        """
+        모든 버킷 목록 조회
+        
+        Returns:
+            버킷 목록
+        """
+        try:
+            response = self.s3_client.list_buckets()
+            return [
+                {
+                    'name': bucket['Name'],
+                    'creation_date': bucket['CreationDate'].isoformat()
+                }
+                for bucket in response['Buckets']
+            ]
+        except ClientError as e:
+            logger.error(f"버킷 목록 조회 실패: {e}")
+            return []
+
+
