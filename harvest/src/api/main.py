@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import health
+from .routers import health, upload
 
 # FastAPI 앱 인스턴스 생성
 app = FastAPI(
@@ -24,7 +24,8 @@ app.add_middleware(
 )
 
 # 라우터 등록
-app.include_router(health.router, tags=["Health"])
+app.include_router(health.router, prefix="/health", tags=["Health"])
+app.include_router(upload.router, prefix="/upload", tags=["Upload"])
 
 
 @app.get("/", tags=["Root"])
@@ -35,5 +36,11 @@ async def root():
         "version": "0.1.0",
         "docs": "/docs",
         "redoc": "/redoc",
-        "health": "/health",
+        "endpoints": {
+            "health": "/health",
+            "upload_files": "/upload/files",
+            "upload_all": "/upload/all",
+            "upload_all_background": "/upload/all/background",
+            "upload_single": "/upload/file/{filename}"
+        }
     }
