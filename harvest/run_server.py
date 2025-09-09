@@ -2,7 +2,8 @@
 """Harvest API 서버 실행 스크립트"""
 
 import uvicorn
-from src.harvest.api.main import app
+
+from src.api.main import app
 
 if __name__ == "__main__":
     # 개발 서버 실행

@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import health, wiki
+from .routers import health
 
 # FastAPI 앱 인스턴스 생성
 app = FastAPI(
@@ -25,7 +25,6 @@ app.add_middleware(
 
 # 라우터 등록
 app.include_router(health.router, tags=["Health"])
-app.include_router(wiki.router, prefix="/api/v1/wiki", tags=["Wiki"])
 
 
 @app.get("/", tags=["Root"])
