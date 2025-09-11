@@ -25,6 +25,19 @@ from .minio import (
     MinIODownloadError,
 )
 
+# X API 관련 imports
+from .x import (
+    XAPIClient,
+    get_x_api_client,
+    XAPIError,
+    XAPIConnectionError,
+    XAPIAuthenticationError,
+    XAPIRateLimitError,
+    XAPIConfigError,
+    XAPISearchError,
+    XAPITimelineError,
+)
+
 __all__ = [
     # Kafka
     "KafkaConfig",
@@ -43,6 +56,16 @@ __all__ = [
     "MinIOConfigError",
     "MinIOUploadError",
     "MinIODownloadError",
+    # X API
+    "XAPIClient",
+    "get_x_api_client",
+    "XAPIError",
+    "XAPIConnectionError",
+    "XAPIAuthenticationError",
+    "XAPIRateLimitError",
+    "XAPIConfigError",
+    "XAPISearchError",
+    "XAPITimelineError",
 ]
 
 

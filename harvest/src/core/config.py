@@ -60,6 +60,37 @@ class Settings(BaseSettings):
         description="재시도 대기 시간 (초)"
     )
 
+    # X API 설정
+    x_api_key: str = Field(
+        description="X API Key"
+    )
+    x_api_secret: str = Field(
+        description="X API Secret"
+    )
+    x_bearer_token: str = Field(
+        description="X Bearer Token"
+    )
+    x_access_token: str = Field(
+        default="",
+        description="X Access Token"
+    )
+    x_access_token_secret: str = Field(
+        default="",
+        description="X Access Token Secret"
+    )
+    x_api_version: str = Field(
+        default="2",
+        description="X API Version"
+    )
+    x_max_results: int = Field(
+        default=100,
+        description="X API 최대 결과 수"
+    )
+    x_rate_limit_wait: bool = Field(
+        default=True,
+        description="X API Rate Limit 대기 여부"
+    )
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
