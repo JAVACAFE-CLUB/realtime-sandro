@@ -3,9 +3,14 @@ plugins {
 }
 
 dependencies {
-    // Codex 모듈 특화 의존성
-    // 검색 및 인덱싱 관련 라이브러리 추가 가능
-    // 예: Elasticsearch, Lucene 등
+    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+
+    // Swagger/OpenAPI
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+
+    // Testing (추가)
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation("io.mockk:mockk:1.13.8")
 }
 
 tasks.bootJar {

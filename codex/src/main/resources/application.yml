@@ -3,6 +3,10 @@ spring:
     name: codex
   profiles:
     active: dev
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 5s
+    socket-timeout: 30s
 
 server:
   port: 8082
