@@ -97,12 +97,58 @@ services:
       timeout: 10s
       retries: 3
 
+  elasticsearch:
+    image: elasticsearch:8.16.2
+    platform: linux/arm64
+    container_name: realtime-elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: false
+      xpack.security.enrollment.enabled: false
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      TZ: Asia/Seoul
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - realtime-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  kibana:
+    image: kibana:8.16.2
+    platform: linux/arm64
+    container_name: realtime-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      TZ: Asia/Seoul
+    networks:
+      - realtime-network
+    restart: unless-stopped
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5601/api/status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   mysql_data:
     driver: local
   minio_data:
     driver: local
   kafka_data:
+    driver: local
+  elasticsearch_data:
     driver: local
 
 networks:

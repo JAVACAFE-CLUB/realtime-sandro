@@ -18,6 +18,7 @@ allprojects {
 }
 
 subprojects {
+    apply(plugin = "java")
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
@@ -26,6 +27,12 @@ subprojects {
 
     group = "com.sandro.realtime"
     version = "0.0.1-SNAPSHOT"
+
+    configure<JavaPluginExtension> {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
 
     dependencies {
         val implementation by configurations
@@ -69,11 +76,6 @@ subprojects {
             freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = "21"
         }
-    }
-
-    tasks.withType<JavaCompile> {
-        sourceCompatibility = "21"
-        targetCompatibility = "21"
     }
 
     tasks.named<Test>("test") {
