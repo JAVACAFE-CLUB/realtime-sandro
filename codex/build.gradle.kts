@@ -8,12 +8,8 @@ dependencies {
     // Kafka
     implementation("org.springframework.kafka:spring-kafka")
 
-    // Swagger/OpenAPI
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-
-    // Testing (추가)
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
-    testImplementation("io.mockk:mockk:1.13.8")
+    // API Documentation
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
 }
 
 tasks.bootJar {
