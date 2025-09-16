@@ -4,6 +4,9 @@ plugins {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+    
+    // Kafka
+    implementation("org.springframework.kafka:spring-kafka")
 
     // Swagger/OpenAPI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
