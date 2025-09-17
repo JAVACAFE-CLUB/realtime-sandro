@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  batch:
+    job:
+      enabled: false
+
+batch:
+  chunk:
+    size: 10
+  wiki:
+    file:
+      path: classpath:sample-wiki.xml.bz2
+
+logging:
+  level:
+    com.sandro.realtime.harvest: DEBUG
