@@ -35,7 +35,7 @@ class WikiPageItemReaderConfig(
         val inputStream = BZip2CompressorInputStream(
             BufferedInputStream(
                 resource.inputStream,
-                1024 * 1024  // 1MB 버퍼
+                32 * 1024 * 1024  // 32MB 버퍼
             ),
             true  // decompressConcatenated: 연결된 bz2 블록 처리
         )
