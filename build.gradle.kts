@@ -53,9 +53,6 @@ subprojects {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-        // API Documentation
-//        implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
-
         // Testing
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -66,6 +63,10 @@ subprojects {
         testImplementation("io.kotest:kotest-assertions-core:5.8.0")
         testImplementation("io.kotest:kotest-property:5.8.0")
         testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
+
+        testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+        testImplementation("io.mockk:mockk:1.13.8")
+
         testImplementation("com.navercorp.fixturemonkey:fixture-monkey-starter-kotlin:1.1.14")
         testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jackson:1.1.14")
         testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jakarta-validation:1.1.14")

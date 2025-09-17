@@ -1,21 +1,221 @@
-<page>
-    <title>지미 카터</title>
-    <ns>0</ns>
-    <id>5</id>
-    <revision>
-        <id>40301269</id>
-        <parentid>40096343</parentid>
-        <timestamp>2025-07-19T13:30:53Z</timestamp>
-        <contributor>
-            <username>TedBot</username>
-            <id>368112</id>
-        </contributor>
-        <minor/>
-        <comment>봇: 문자열 변경 (안를 → 안을 )</comment>
-        <origin>40301269</origin>
-        <model>wikitext</model>
-        <format>text/x-wiki</format>
-        <text bytes="62995" sha1="2p5s32ltuxegvkiohitf1p5rktoh1kt" xml:space="preserve">{{대통령 정보
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.11/ http://www.mediawiki.org/xml/export-0.11.xsd" version="0.11" xml:lang="ko">
+    <siteinfo>
+        <sitename>위키백과</sitename>
+        <dbname>kowiki</dbname>
+        <base>https://ko.wikipedia.org/wiki/%EC%9C%84%ED%82%A4%EB%B0%B1%EA%B3%BC:%EB%8C%80%EB%AC%B8</base>
+        <generator>MediaWiki 1.45.0-wmf.16</generator>
+        <case>first-letter</case>
+        <namespaces>
+            <namespace key="-2" case="first-letter">미디어</namespace>
+            <namespace key="-1" case="first-letter">특수</namespace>
+            <namespace key="0" case="first-letter"/>
+            <namespace key="1" case="first-letter">토론</namespace>
+            <namespace key="2" case="first-letter">사용자</namespace>
+            <namespace key="3" case="first-letter">사용자토론</namespace>
+            <namespace key="4" case="first-letter">위키백과</namespace>
+            <namespace key="5" case="first-letter">위키백과토론</namespace>
+            <namespace key="6" case="first-letter">파일</namespace>
+            <namespace key="7" case="first-letter">파일토론</namespace>
+            <namespace key="8" case="first-letter">미디어위키</namespace>
+            <namespace key="9" case="first-letter">미디어위키토론</namespace>
+            <namespace key="10" case="first-letter">틀</namespace>
+            <namespace key="11" case="first-letter">틀토론</namespace>
+            <namespace key="12" case="first-letter">도움말</namespace>
+            <namespace key="13" case="first-letter">도움말토론</namespace>
+            <namespace key="14" case="first-letter">분류</namespace>
+            <namespace key="15" case="first-letter">분류토론</namespace>
+            <namespace key="100" case="first-letter">포털</namespace>
+            <namespace key="101" case="first-letter">포털토론</namespace>
+            <namespace key="102" case="first-letter">위키프로젝트</namespace>
+            <namespace key="103" case="first-letter">위키프로젝트토론</namespace>
+            <namespace key="118" case="first-letter">초안</namespace>
+            <namespace key="119" case="first-letter">초안토론</namespace>
+            <namespace key="710" case="first-letter">TimedText</namespace>
+            <namespace key="711" case="first-letter">TimedText talk</namespace>
+            <namespace key="828" case="first-letter">모듈</namespace>
+            <namespace key="829" case="first-letter">모듈토론</namespace>
+            <namespace key="1728" case="first-letter">행사</namespace>
+            <namespace key="1729" case="first-letter">행사토론</namespace>
+        </namespaces>
+    </siteinfo>
+    <page>
+        <title>위키백과:대문</title>
+        <ns>4</ns>
+        <id>3</id>
+        <revision>
+            <id>40156846</id>
+            <parentid>38586919</parentid>
+            <timestamp>2025-06-27T15:07:27Z</timestamp>
+            <contributor>
+                <username>Ykhwong</username>
+                <id>22169</id>
+            </contributor>
+            <minor/>
+            <origin>40156846</origin>
+            <model>wikitext</model>
+            <format>text/x-wiki</format>
+            <text bytes="14680" sha1="0pcfpwmj2x9p4xsxs2o6fhur5loodgn" xml:space="preserve">&lt;templatestyles src=&quot;틀:대문/styles.css&quot; /&gt;
+&lt;div class=&quot;main-box main-top&quot; style=&quot;flex: 10;&quot;&gt;
+	&lt;div class=&quot;main-top-left&quot;&gt;
+		&lt;span style=&quot;font-size: 1.8rem; margin-top: 0; margin-bottom: .1em;&quot;&gt;[[위키백과:소개|&lt;span style=&quot;color: black; font-weight: bold;&quot;&gt;위키백과&lt;/span&gt;]]&lt;/span&gt;
+		&lt;p style=&quot;font-size: 1rem; margin-top: .1em; margin-bottom: 1em;&quot;&gt;우리 모두가 만들어가는 자유 백과사전&lt;span class=&quot;nomobile&quot;&gt;&lt;br /&gt;문서 [[위키백과:통계|{{말풍선|1=&lt;span style=&quot;color: #246ad3;&quot;&gt;'''{{NUMBEROFARTICLES}}'''&lt;/span&gt;|style=text-decoration: none; cursor: pointer;|2=넘겨주기와 막다른 문서를 제외한 모든 글의 수}}]]개와 최근 기여자 '''[[위키백과:통계|{{NUMBEROFACTIVEUSERS}}]]'''명&lt;/span&gt;&lt;/p&gt;
+        &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;main-pane&quot;&gt;
+&lt;!--좌측 상자 시작--&gt;
+	&lt;div class=&quot;main-pane-left&quot; style=&quot;flex: 5; flex-flow: column;&quot;&gt;
+		&lt;!-- 사랑방질문방등등 --&gt;
+		&lt;div class=&quot;wikipedia-ko shortcuts main-box&quot; style=&quot;display: inline-block; width: 100%; margin-top: 20px; flex: 1;&quot;&gt;
+			&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px 10px 0 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[파일: XEIcon xi-group.svg|40px|sub|link=위키백과:사랑방]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid rgb(82, 76, 76); margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[위키백과:사랑방|사랑방]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;다른 분들과 의견을 교환해봐요!&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px 10px 0 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[파일: XEIcon xi-message.svg|40px|sub|link=위키백과:질문방]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[위키백과: 질문방|질문방]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;지침으로 해소되지 않는 의문을 풀어봐요!&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px 10px 0 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[파일:Group half.svg|40px|sub|link=위키백과:사용자 모임]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[위키백과:사용자 모임|사용자 모임]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;커뮤니티 포털에 방문해 보세요!&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px 10px 0 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[파일: XEIcon xi-library-bookmark.svg|40px|sub|link=위키백과:정책과 지침]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[위키백과:정책과 지침|정책과 지침]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;편집하시기 전에 한번 읽어주세요!&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+&lt;!-- 도움말 칸 --&gt;
+&lt;div class=&quot;wikipedia-ko manual main-box&quot; style=&quot;width: 100%; margin-top: 20px; flex: 1;&quot;&gt;
+		&lt;div class=&quot;wikipedia-ko participation-header&quot; style=&quot;width: 100%; font-size: 1.1em; overflow: auto;&quot;&gt;
+				&lt;span style=&quot;height: 2rem;&quot; class=&quot;main-section&quot;&gt;'''[[위키백과:위키백과에 참여하기|위키백과 참여하기]]'''&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[File:XEIcon xi-heart.svg|40px|sub|link=위키백과:환영합니다]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[위키백과:환영합니다|환영합니다!]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;위키백과는 여러분을 환영합니다.&lt;br&gt;이것부터 시작해 볼까요?&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[File:Book_sans_information.svg|40px|sub|link=도움말:소개]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[도움말:소개|위키백과 길라잡이]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;여러분을 위키인으로 만들어줄 가이드북!&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[File:Document sans add.svg|40px|sub|link=도움말:새 문서 만들기]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[도움말:새 문서 만들기|새 문서 만들기 도움말]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;새 문서를 만드는 방법에 대해 안내합니다.&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[File:Document text edit.svg|40px|sub|link=도움말:문서 편집하기]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[도움말:문서 편집하기|문서 편집 도움말]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;문서를 편집하는 방법에 대해 안내합니다.&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[File:PICOL icon Image add.svg|40px|sub|link=도움말:그림 올리기]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[도움말:그림 올리기|그림 올리기 도움말]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;그림을 올리는 방법에 대해 안내합니다.&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;main-shortcut-item&quot; style=&quot;border: 1px solid #EBEBEB; margin: 10px; padding: .8rem 0;&quot;&gt;
+				&lt;div style=&quot;display: inline-block; margin-left: 10px;&quot;&gt;[[파일: XEIcon xi-building.svg|40px|sub|link=위키백과:지원 단체]]&lt;/div&gt;
+				&lt;div style=&quot;display: inline-block; border-left: 2px solid grey; margin-left: 10px; padding-left: 10px; width: calc(100% - 80px);&quot;&gt;
+					&lt;p style=&quot;margin: 0&quot;&gt;&lt;span style=&quot;font-size: 20px; font-weight: bold;&quot;&gt;[[위키백과:지원 단체|지원 단체]]&lt;/span&gt;&lt;br&gt;
+					&lt;span style=&quot;font-size: 13px; font-weight: bold;&quot;&gt;위키백과 커뮤니티를 지원하는 단체는?&lt;/span&gt;&lt;/p&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- 위키백과 소개 --&gt;
+		&lt;div class=&quot;wikipedia-ko introduction main-box nomobile&quot; style=&quot;clear: both; width: 100%; margin-top: 20px; flex: 1;&quot;&gt;
+			&lt;div class=&quot;wikipedia-ko introduction-header&quot; style=&quot;width: 100%; font-size: 1.1em; overflow: auto;&quot;&gt;
+				&lt;span style=&quot;height: 2rem;&quot; class=&quot;main-section&quot;&gt;'''[[백:소개|위키백과 소개]]'''&lt;/span&gt;&lt;/div&gt;
+			&lt;div style=&quot;clear: both; margin: 0 20px;&quot;&gt;{{위키백과 소개}}&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;div class=&quot;wikipedia-ko todaypircute main-box nomobile&quot; style=&quot;clear: both; width: 100%; margin-top: 20px; flex: 1;&quot;&gt;
+			&lt;div class=&quot;wikipedia-ko todaypircute-header&quot; style=&quot;width: 100%; font-size: 1.1em; overflow: auto;&quot;&gt;
+				&lt;span style=&quot;height: 2rem;&quot; class=&quot;main-section&quot;&gt;'''[[위키백과:오늘의 그림|오늘의 그림]]'''&lt;/span&gt;&lt;/div&gt;
+			&lt;div class=&quot;center&quot; style=&quot;clear: both; overflow: hidden;&quot;&gt;&lt;div style=&quot;margin-bottom: 0.5em&quot;&gt;[[파일:{{위키백과:오늘의 그림/{{#timel:Y년 F}}/그림|d{{#timel:j}}}}|270x270px]]&lt;/div&gt;{{#if: {{위키백과:오늘의 그림/{{#timel:Y년 F}}/한국어|d{{#timel:j}}}}|{{위키백과:오늘의 그림/{{#timel:Y년 F}}/영어|d{{#timel:j}}}}|위 그림은 [[:commons:Commons:Picture of the day/ko|위키미디어 공용]]에서 가져왔습니다.}}&lt;/div&gt;&lt;div style=&quot;text-align:right; margin: 0 20px;&quot;&gt;'''[[위키백과:오늘의 그림/역사|더 보기...]]'''
+			&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+&lt;!-- 좌측 상자 끝 --&gt;
+&lt;!-- 우측 상자 시작 --&gt;
+	&lt;div class=&quot;main-pane-right&quot; style=&quot;flex: 4; flex-flow: column;&quot;&gt;
+		&lt;!-- 알찬/좋은 글 박스 --&gt;
+		&lt;div class=&quot;wikipedia-ko main-recommended main-box&quot; style=&quot;width: 100%; margin-top: 20px; height: max-content; flex: 1;&quot;&gt;
+			&lt;div class=&quot;wikipedia-ko good-header&quot; style=&quot;width: 100%; overflow: auto; font-size: 1.1em;&quot;&gt;&lt;span style=&quot;height: auto;&quot; class=&quot;main-section&quot;&gt;'''[[{{위키백과:오늘의 알찬 글/목록}}|알찬 글: {{위키백과:오늘의 알찬 글/목록}}]]'''&lt;/span&gt;&lt;div style=&quot;float: right; height: 2rem; margin: .6rem 0;&quot;&gt;{{클릭가능한 버튼2|:위키백과:알찬 글|더 보기|style=display: inline-block; height: 2rem; line-height: 2rem; padding: 0 1rem; border: 1px solid #EBEBEB; border-radius: 1rem; margin-right: 1rem;}}&lt;/div&gt;&lt;/div&gt;
+			&lt;div style=&quot;clear: both; margin: 0 20px;&quot;&gt;{{위키백과:오늘의 알찬 글}}&lt;/div&gt;
+            &lt;hr style=&quot;opacity: 0.5&quot;&gt;
+            &lt;div class=&quot;wikipedia-ko good-header&quot; style=&quot;width: 100%; overflow: auto; font-size: 1.1em;&quot;&gt;&lt;span style=&quot;height: auto;&quot; class=&quot;main-section&quot;&gt;'''[[{{위키백과:오늘의 좋은 글/목록}}|좋은 글: {{위키백과:오늘의 좋은 글/목록}}]]'''&lt;/span&gt;&lt;div style=&quot;float: right; height: 2rem; margin: .6rem 0;&quot;&gt;{{클릭가능한 버튼2|:위키백과:좋은 글|더 보기|style=display: inline-block; height: 2rem; line-height: 2rem; padding: 0 1rem; border: 1px solid #EBEBEB; border-radius: 1rem; margin-right: 1rem;}}&lt;/div&gt;&lt;/div&gt;
+&lt;hr style=&quot;opacity: 0.5&quot;&gt;
+            &lt;div class=&quot;wikipedia-ko good-header&quot; style=&quot;width: 100%; overflow: auto; font-size: 1.1em;&quot;&gt;&lt;span style=&quot;height: auto;&quot; class=&quot;main-section&quot;&gt;'''[[{{위키백과:오늘의 알찬 목록/목록}}|알찬 목록: {{위키백과:오늘의 알찬 목록/목록}}]]'''&lt;/span&gt;&lt;div style=&quot;float: right; height: 2rem; margin: .6rem 0;&quot;&gt;{{클릭가능한 버튼2|:위키백과:알찬 목록|더 보기|style=display: inline-block; height: 2rem; line-height: 2rem; padding: 0 1rem; border: 1px solid #EBEBEB; border-radius: 1rem; margin-right: 1rem;}}&lt;/div&gt;&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;!-- 새로 들어온 소식 --&gt;
+		&lt;div class=&quot;wikipedia-ko news main-box&quot; style=&quot;clear: both; width: 100%; margin-top: 20px; flex: 1;&quot;&gt;
+			&lt;div class=&quot;wikipedia-ko news-header&quot; style=&quot;width: 100%; font-size: 1.1em; overflow: auto;&quot;&gt;
+				&lt;span style=&quot;height: 2rem;&quot; class=&quot;main-section&quot;&gt;'''[[포털:요즘 화제|새로 들어온 소식]]'''&lt;/span&gt;&lt;div style=&quot;float: right; height: 2rem; margin: .6rem 0;&quot;&gt;{{클릭가능한 버튼2|위키백과:새로 들어온 소식|이게 뭔가요?|style=display: inline-block; height: 2rem; line-height: 2rem; padding: 0 1rem; border: 1px solid #EBEBEB; border-radius: 1rem; margin-right: 1rem;}}&lt;/div&gt;&lt;/div&gt;
+			&lt;div style=&quot;clear: both; margin: 0 20px;&quot;&gt;{{새로 들어온 소식}}&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;!-- 오늘의 역사 --&gt;
+		&lt;div class=&quot;wikipedia-ko history main-box nomobile&quot; style=&quot;width: 100%; margin-top: 20px; flex: 1;&quot;&gt;
+			&lt;div class=&quot;wikipedia-ko history-header&quot; style=&quot;width: 100%; overflow: auto; font-size: 1.1em;&quot;&gt;&lt;span style=&quot;height: 2rem;&quot; class=&quot;main-section&quot;&gt;'''[[위키백과:오늘의 역사|오늘의 역사]]'''&lt;/span&gt;&lt;div style=&quot;float: right; height: 2rem; margin: .6rem 0;&quot;&gt;{{클릭가능한 버튼2|위키백과:오늘의 역사/{{#timel: F j일|-1 days}}|어제|style=display: inline-block; height: 2rem; line-height: 2rem; padding: 0 1rem; border: 1px solid #EBEBEB; border-radius: 1rem; margin-right: 1rem;}}{{클릭가능한 버튼2|위키백과:오늘의 역사/{{#timel: F j일|+1 days}}|내일|style=display: inline-block; height: 2rem; line-height: 2rem; padding: 0 1rem; border: 1px solid #EBEBEB; border-radius: 1rem; margin-right: 1rem;}}&lt;/div&gt;&lt;/div&gt;
+			&lt;div style=&quot;clear: both; margin: 0 20px;&quot;&gt;{{위키백과:오늘의 역사/{{#timel:F j일}}}}&lt;/div&gt;
+		&lt;/div&gt;
+		&lt;!-- 알고 계십니까 --&gt;
+		&lt;div class=&quot;wikipedia-ko dyk main-box nomobile&quot; style=&quot;width: 100%; margin-top: 20px; flex: 1;&quot;&gt;
+			&lt;div class=&quot;wikipedia-ko dyk-header&quot; style=&quot;width: 100%; overflow: auto; font-size: 1.1em;&quot;&gt;&lt;span style=&quot;height: 2rem;&quot; class=&quot;main-section&quot;&gt;'''[[위키백과:알고 계십니까/역사|알고 계십니까]]'''&lt;/span&gt;&lt;div style=&quot;float: right; height: 2rem; margin: .6rem 0;&quot;&gt;{{클릭가능한 버튼2|위키백과:알고 계십니까|이게 뭔가요?|style=display: inline-block; height: 2rem; line-height: 2rem; padding: 0 1rem; border: 1px solid #EBEBEB; border-radius: 1rem; margin-right: 1rem;}}&lt;/div&gt;&lt;/div&gt;
+			&lt;div style=&quot;clear: both; margin: 0 20px;&quot;&gt;{{알고 계십니까}}&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- 우측 상자 끝--&gt;
+&lt;!-- 자매 프로젝트 --&gt;
+&lt;div class=&quot;wikipedia-ko sister main-box&quot; style=&quot;clear: both; display:inline-block; width: 100%; margin-top: 20px;&quot;&gt;
+&lt;div class=&quot;wikipedia-ko sister-header&quot; style=&quot;width: 100%; font-size: 1.1em; overflow: auto;&quot;&gt;
+&lt;span style=&quot;height: 2rem;&quot; class=&quot;main-section&quot;&gt;'''[[위키백과:자매 프로젝트|자매 프로젝트]]'''&lt;/span&gt;&lt;/div&gt;
+&lt;div style=&quot;clear: both; margin: 0 20px;&quot;&gt;{{자매프로젝트}}&lt;/div&gt;
+&lt;/div&gt;
+&lt;div style=&quot;display: inline-block; text-align: right; width: 100%;&quot;&gt;[[meta:List_of_Wikipedias/ko|위키백과 언어 전체 목록]]&lt;/div&gt;
+{{대문 인터위키}}{{noexternallanglinks}}</text>
+            <sha1>0pcfpwmj2x9p4xsxs2o6fhur5loodgn</sha1>
+        </revision>
+    </page>
+    <page>
+        <title>지미 카터</title>
+        <ns>0</ns>
+        <id>5</id>
+        <revision>
+            <id>40301269</id>
+            <parentid>40096343</parentid>
+            <timestamp>2025-07-19T13:30:53Z</timestamp>
+            <contributor>
+                <username>TedBot</username>
+                <id>368112</id>
+            </contributor>
+            <minor/>
+            <comment>봇: 문자열 변경 (안를 → 안을 )</comment>
+            <origin>40301269</origin>
+            <model>wikitext</model>
+            <format>text/x-wiki</format>
+            <text bytes="62995" sha1="2p5s32ltuxegvkiohitf1p5rktoh1kt" xml:space="preserve">{{대통령 정보
 | 이름 = 지미 카터
 | 원어명 = {{lang|en|Jimmy Carter}}
 | 그림 = JimmyCarterPortrait.jpg
@@ -363,6 +563,7 @@
 [[분류:미국의 백세인]]
 [[분류:미국철학학회 회원]]
 [[분류:조지아주 상원의원]]</text>
-        <sha1>2p5s32ltuxegvkiohitf1p5rktoh1kt</sha1>
-    </revision>
-</page>
+            <sha1>2p5s32ltuxegvkiohitf1p5rktoh1kt</sha1>
+        </revision>
+    </page>
+</mediawiki>
