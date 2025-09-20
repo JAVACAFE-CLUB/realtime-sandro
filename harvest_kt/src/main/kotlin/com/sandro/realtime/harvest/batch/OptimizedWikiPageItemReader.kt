@@ -13,6 +13,8 @@ import java.io.InputStream
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamReader
+import com.ctc.wstx.api.WstxInputProperties
+import com.ctc.wstx.stax.WstxInputFactory
 
 /**
  * Wikipedia 덤프 파일을 위한 최적화된 ItemReader
@@ -32,13 +34,24 @@ class OptimizedWikiPageItemReader(
         configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
     }
 
-    private val xmlInputFactory = XMLInputFactory.newInstance().apply {
-        // 성능 최적화 설정
+    private val xmlInputFactory = WstxInputFactory().apply {
+        // Woodstox 고성능 설정
+        setProperty(WstxInputProperties.P_INPUT_BUFFER_LENGTH, 64 * 1024)  // 64KB 입력 버퍼
+        setProperty(WstxInputProperties.P_MIN_TEXT_SEGMENT, 1024)  // 텍스트 세그먼트 최소 크기
+        
+        // 표준 최적화 설정
         setProperty(XMLInputFactory.IS_COALESCING, true)  // 텍스트 노드 병합
-        setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false)  // 보안
-        setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false)  // 성능
-        setProperty(XMLInputFactory.IS_VALIDATING, false)  // 성능
-        setProperty(XMLInputFactory.SUPPORT_DTD, false)  // 보안 & 성능
+        setProperty(XMLInputFactory.IS_VALIDATING, false)  // 검증 비활성화
+        setProperty(XMLInputFactory.SUPPORT_DTD, false)  // DTD 지원 비활성화
+        setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false)  // 네임스페이스 비활성화 (Wikipedia 덤프에서 불필요)
+        
+        // 보안 설정
+        setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false)
+        setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false)
+        
+        // Woodstox 전용 최적화
+        setProperty(WstxInputProperties.P_CACHE_DTDS, false)  // DTD 캐싱 비활성화 (사용하지 않으므로)
+        setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 32 * 1024)  // 최대 속성 크기 제한
     }
 
     private var currentItemCount = 0L
@@ -76,16 +89,13 @@ class OptimizedWikiPageItemReader(
     }
 
     override fun read(): WikiPage? {
-        if (!hasMorePages) {
-            return null
-        }
+        if (!hasMorePages) return null
 
         return try {
             // 현재 위치가 <page> 요소인지 확인
             if (xmlStreamReader.eventType == XMLStreamConstants.START_ELEMENT
                 && xmlStreamReader.localName == PAGE_ELEMENT
             ) {
-
                 // XMLStreamReader를 직접 사용하여 WikiPage 객체로 변환
                 val wikiPage = xmlMapper.readValue(xmlStreamReader, WikiPage::class.java)
                 currentItemCount++
@@ -97,7 +107,7 @@ class OptimizedWikiPageItemReader(
             } else {
                 // <page> 요소가 아닌 경우 다음 페이지 찾기
                 if (moveToNextPage()) {
-                    read()
+                    read() // 현재 구조에서 overflow 가능성 없음.
                 } else {
                     null
                 }
