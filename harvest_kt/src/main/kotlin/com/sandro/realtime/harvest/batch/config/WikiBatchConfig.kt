@@ -26,7 +26,7 @@ class WikiBatchConfig(
     @Value("\${batch.wiki.file.path}")
     private lateinit var wikiFilePath: String
 
-    @Value("\${batch.chunk.size:100}")
+    @Value("\${batch.chunk.size:100}") // TODO: 적절하게 튜닝하기
     private var chunkSize: Int = 100
 
     @Bean

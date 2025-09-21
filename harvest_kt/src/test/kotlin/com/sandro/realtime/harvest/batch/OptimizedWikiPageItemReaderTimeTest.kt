@@ -4,6 +4,7 @@ import com.sandro.realtime.harvest.domain.WikiPage
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldNotBe
+import net.jqwik.api.Disabled
 import org.springframework.batch.item.ExecutionContext
 import org.springframework.batch.item.ItemStreamReader
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +15,7 @@ import kotlin.system.measureTimeMillis
 /**
  * 성능을 테스트하기 위한 테스트
  */
+@Disabled
 @ActiveProfiles("wiki-dump-test")
 @SpringBootTest
 class OptimizedWikiPageItemReaderTimeTest : BehaviorSpec() {

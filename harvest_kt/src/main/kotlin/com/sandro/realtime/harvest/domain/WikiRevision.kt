@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 @JacksonXmlRootElement(localName = "revision")
 data class WikiRevision(
     @field:JacksonXmlProperty(localName = "id")
-    val id: Long? = null,
+    val id: Long,
 
     @field:JacksonXmlProperty(localName = "parentid")
     val parentId: Long? = null,
