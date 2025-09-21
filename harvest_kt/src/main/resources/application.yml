@@ -11,7 +11,7 @@ spring:
     ansi:
       enabled: always
   datasource:
-    url: jdbc:mysql://localhost:3307/harvest_db?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/harvest_db?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: realtime
     password: realtime1234
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -39,8 +39,8 @@ spring:
       authentication-database: admin
       database: harvest_db
   kafka:
+    bootstrap-servers: localhost:9092
     producer:
-      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
@@ -57,8 +57,7 @@ spring:
         max.in.flight.requests.per.connection: 5  # 연결당 최대 진행 중 요청
         
         # JSON 직렬화 설정
-        spring.json.type.mapping: |
-          ContentProcessedMessage=com.sandro.realtime.harvest.service.ContentProcessedMessage
+        spring.json.type.mapping: ContentProcessedMessage:com.sandro.realtime.harvest.service.ContentProcessedMessage
 
 harvest:
   description: "대용량 파일 수집 시스템 - 수확기"
@@ -67,10 +66,10 @@ harvest:
 # 배치 관련 설정
 batch:
   chunk:
-    size: 100
+    size: 1000
   wiki:
     file:
-      path: file:${user.home}/bigdata/kowiki-20250901-pages-articles-multistream1.xml-p1p82407.bz2
+      path: file:${user.home}/bigdata/kowiki-20250820-pages-articles-multistream1.xml-p1p82407.bz2
 
 # 로깅 설정
 logging:

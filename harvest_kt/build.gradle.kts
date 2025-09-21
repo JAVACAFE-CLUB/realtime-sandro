@@ -28,6 +28,8 @@ dependencies {
 
     // Spring Batch Test
     testImplementation("org.springframework.batch:spring-batch-test")
+    // Kafka Test
+    testImplementation("org.springframework.kafka:spring-kafka-test")
     testRuntimeOnly("com.h2database:h2")
 }
 

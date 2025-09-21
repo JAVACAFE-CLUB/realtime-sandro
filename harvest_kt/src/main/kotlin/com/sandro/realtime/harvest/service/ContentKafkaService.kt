@@ -58,7 +58,7 @@ class ContentKafkaService(
      */
     private fun sendBatchMessages(topic: String, messages: List<ContentProcessedMessage>) {
         val futures = messages.map { message ->
-            kafkaTemplate.send(topic, message.id, message)
+            kafkaTemplate.send(topic, message)
         }.toTypedArray()
 
         try {

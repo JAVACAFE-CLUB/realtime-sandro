@@ -39,11 +39,12 @@ class WikiPageRepository(
             val sourceContent = SourceContent.fromWikiPage(wikiPage)
             sourceContents.add(sourceContent)
 
+            // TODO: 중복제거 확인하기
             // 기존과 동일한 조건부 쿼리: revision이 다를 때만 upsert
             val query = Query.query(
                 Criteria.where("type").`is`(SourceType.WIKIPEDIA)
                     .and("content.id").`is`(wikiPage.id)
-                    .and("content.revision.id").ne(wikiPage.revision.id)
+//                    .and("content.revision.id").ne(wikiPage.revision.id)
             )
 
             val update = Update()

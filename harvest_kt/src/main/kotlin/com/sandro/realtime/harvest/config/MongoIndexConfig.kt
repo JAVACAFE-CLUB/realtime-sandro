@@ -4,6 +4,7 @@ import com.sandro.realtime.harvest.domain.SourceContent
 import com.sandro.realtime.harvest.domain.SourceType
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -14,8 +15,10 @@ import org.springframework.data.mongodb.core.query.Criteria
 /**
  * MongoDB 인덱스 설정
  * Partial Index를 통해 타입별로 효율적인 인덱싱 수행
+ * test 프로파일이 아닌 경우에만 실행
  */
 @Configuration
+@Profile("!test")
 class MongoIndexConfig(
     private val mongoTemplate: MongoTemplate
 ) {
