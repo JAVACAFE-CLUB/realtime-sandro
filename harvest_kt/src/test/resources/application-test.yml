@@ -4,7 +4,13 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
   batch:
+    jdbc:
+      initialize-schema: always
     job:
       enabled: false
 
@@ -18,3 +24,4 @@ batch:
 logging:
   level:
     com.sandro.realtime.harvest: DEBUG
+    org.springframework.batch: WARN

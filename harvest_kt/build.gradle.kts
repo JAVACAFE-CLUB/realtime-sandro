@@ -12,8 +12,11 @@ dependencies {
     implementation("com.fasterxml.woodstox:woodstox-core:6.6.2") // StAX 구현체
     implementation("org.springframework:spring-oxm") // Spring OXM for XML marshalling
 
+    // MongoDB
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+    // Kafka
 //    implementation("org.springframework.kafka:spring-kafka")
-//    implementation("io.minio:minio:8.5.17")
 
     // Database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

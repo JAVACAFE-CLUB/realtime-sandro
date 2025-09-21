@@ -23,27 +23,25 @@ services:
       - realtime-network
     restart: unless-stopped
 
-  minio:
-    image: minio/minio:latest
+  mongodb:
+    image: mongo:7.0
     platform: linux/arm64
-    container_name: realtime-minio
+    container_name: realtime-mongodb
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "27017:27017"
     environment:
-      MINIO_ROOT_USER: minio
-      MINIO_ROOT_PASSWORD: minio123
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
       TZ: Asia/Seoul
     volumes:
-      - minio_data:/Users/sandeulpark/minio
-    command: server /data --console-address ":9001"
+      - mongodb_data:/data/db
     networks:
       - realtime-network
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 30s
-      timeout: 20s
+      timeout: 10s
       retries: 3
 
   kafka:
@@ -144,7 +142,7 @@ services:
 volumes:
   mysql_data:
     driver: local
-  minio_data:
+  mongodb_data:
     driver: local
   kafka_data:
     driver: local

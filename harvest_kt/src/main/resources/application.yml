@@ -10,6 +10,11 @@ spring:
   output:
     ansi:
       enabled: always
+  datasource:
+    url: jdbc:mysql://localhost:3307/harvest_db?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: realtime
+    password: realtime1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
   batch:
     # Spring Batch 메타데이터 테이블 자동 생성
     jdbc:
@@ -17,11 +22,6 @@ spring:
     job:
       # 애플리케이션 시작 시 자동으로 Job 실행 여부
       enabled: true
-  datasource:
-    url: jdbc:mysql://localhost:3307/harvest_db?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: realtime
-    password: realtime1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -30,6 +30,15 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
     show-sql: true
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: admin
+      password: admin123
+      authentication-database: admin
+      database: harvest_db
+
 harvest:
   description: "대용량 파일 수집 시스템 - 수확기"
   version: 1.0.0
