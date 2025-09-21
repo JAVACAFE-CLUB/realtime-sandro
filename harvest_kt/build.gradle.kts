@@ -3,6 +3,9 @@ plugins {
 }
 
 dependencies {
+    // Common 모듈 의존성
+    implementation(project(":common"))
+
     // Spring Batch
     implementation("org.springframework.boot:spring-boot-starter-batch")
 
@@ -16,7 +19,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
     // Kafka
-//    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.kafka:spring-kafka")
 
     // Database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -29,9 +32,5 @@ dependencies {
 }
 
 tasks.bootJar {
-    enabled = true
-}
-
-tasks.jar {
     enabled = true
 }

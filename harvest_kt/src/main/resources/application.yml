@@ -38,6 +38,27 @@ spring:
       password: admin123
       authentication-database: admin
       database: harvest_db
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        # 배치 최적화 설정 (위키 대용량 텍스트 데이터에 최적화)
+        batch.size: 1048576       # 1MB - 위키 데이터 특성상 큰 배치 사이즈 설정
+        linger.ms: 50             # 50ms - 대량 데이터 처리를 위해 대기 시간 증가
+        buffer.memory: 134217728  # 128MB - 대용량 데이터 처리를 위해 버퍼 증가
+        compression.type: lz4     # 압축 (성능 향상)
+        
+        # 멱등성 프로듀서 설정 (exactly-once 전송 보장)
+        enable.idempotence: true   # 멱등성 프로듀서 활성화
+        acks: all                 # 안정성 (모든 replica 확인)
+        retries: 2147483647       # 최대 재시도 (멱등성 프로듀서 필수)
+        max.in.flight.requests.per.connection: 5  # 연결당 최대 진행 중 요청
+        
+        # JSON 직렬화 설정
+        spring.json.type.mapping: |
+          ContentProcessedMessage=com.sandro.realtime.harvest.service.ContentProcessedMessage
 
 harvest:
   description: "대용량 파일 수집 시스템 - 수확기"
