@@ -31,8 +31,16 @@ dependencies {
     // Kafka Test
     testImplementation("org.springframework.kafka:spring-kafka-test")
     testRuntimeOnly("com.h2database:h2")
+
+    // Embedded MongoDB for testing (Spring Boot 3.x 지원)
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0")
 }
 
 tasks.bootJar {
     enabled = true
+}
+
+tasks.test {
+    // Mockito Java Agent를 빌드 시점에 추가
+    jvmArgs("-javaagent:${configurations.testRuntimeClasspath.get().find { it.name.contains("mockito-core") }}")
 }

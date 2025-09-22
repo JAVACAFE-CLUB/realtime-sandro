@@ -32,19 +32,20 @@ class WikiPageRepository(
     fun bulkUpsertWithRevisionCheck(wikiPages: List<WikiPage>): List<SourceContent> {
         if (wikiPages.isEmpty()) return emptyList()
 
+        val pagesToUpdate = filterPagesToUpdate(wikiPages)
+
+        if (pagesToUpdate.isEmpty()) return emptyList()
+
         val bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, SourceContent::class.java)
         val sourceContents = mutableListOf<SourceContent>()
 
-        wikiPages.forEach { wikiPage ->
+        pagesToUpdate.forEach { wikiPage ->
             val sourceContent = SourceContent.fromWikiPage(wikiPage)
             sourceContents.add(sourceContent)
 
-            // TODO: 중복제거 확인하기
-            // 기존과 동일한 조건부 쿼리: revision이 다를 때만 upsert
-            val query = Query.query(
+            val upsertQuery = Query.query(
                 Criteria.where("type").`is`(SourceType.WIKIPEDIA)
                     .and("content.id").`is`(wikiPage.id)
-//                    .and("content.revision.id").ne(wikiPage.revision.id)
             )
 
             val update = Update()
@@ -53,28 +54,45 @@ class WikiPageRepository(
                 .setOnInsert("type", SourceType.WIKIPEDIA)
                 .setOnInsert("createdAt", LocalDateTime.now())
 
-            bulkOps.upsert(query, update)
+            bulkOps.upsert(upsertQuery, update)
         }
 
         return try {
-            val result = bulkOps.execute()
-
-            // 실제로 변경된 문서들의 ID 목록
-            val upsertedIds = result.upserts.map { it.id }
-
-            if (upsertedIds.isNotEmpty()) {
-                // 변경된 문서들만 조회해서 반환
-                mongoTemplate.find(
-                    Query.query(Criteria.where("_id").`in`(upsertedIds)),
-                    SourceContent::class.java
-                )
-            } else {
-                emptyList()
-            }
-
+            bulkOps.execute()
+            pagesToUpdate.map { SourceContent.fromWikiPage(it) }
         } catch (e: Exception) {
             logger.error("Failed to bulk upsert wiki pages: count=${wikiPages.size}", e)
             throw e
         }
+    }
+
+    private fun filterPagesToUpdate(wikiPages: List<WikiPage>): List<WikiPage> {
+        // 먼저 기존 문서들의 revision 정보만 조회 (Projection 사용)
+        val wikiPageIds = wikiPages.map { it.id }
+        val query = Query.query(
+            Criteria.where("type").`is`(SourceType.WIKIPEDIA)
+                .and("content.id").`in`(wikiPageIds)
+        )
+        // content.id와 content.revision.id만 조회하여 성능 최적화
+        query.fields()
+            .include("type")  // SourceContent 객체 생성에 필요
+            .include("content.id")
+            .include("content.revision.id")
+
+        val existingDocs = mongoTemplate.find(query, SourceContent::class.java)
+
+        // 기존 revision id를 페이지 id와 매핑 (Map에서 직접 추출)
+        val existingRevisions = existingDocs.associate { doc ->
+            val id = (doc.content["id"] as? Number)?.toLong()
+                ?: throw IllegalStateException("Missing or invalid content.id in document")
+
+            val revisionId = ((doc.content["revision"] as? Map<*, *>)?.get("id") as? Number)?.toLong()
+                ?: throw IllegalStateException("Missing or invalid content.revision.id for page id: $id")
+
+            id to revisionId
+        }
+
+        // revision이 변경된 페이지만 필터링
+        return wikiPages.filter { wikiPage -> existingRevisions[wikiPage.id] != wikiPage.revision.id }
     }
 }
