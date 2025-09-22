@@ -2,41 +2,31 @@ package com.sandro.realtime.harvest.batch
 
 import com.sandro.realtime.harvest.domain.WikiPage
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldNotBe
-import net.jqwik.api.Disabled
 import org.springframework.batch.item.ExecutionContext
-import org.springframework.batch.item.ItemStreamReader
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
+import java.io.FileInputStream
 import kotlin.system.measureTimeMillis
 
 /**
  * 성능을 테스트하기 위한 테스트
+ * 이 테스트는 성능 측정용이므로 일반 테스트 실행에서 제외됩니다.
  */
-@Disabled
-@ActiveProfiles("wiki-dump-test")
-@SpringBootTest
 class OptimizedWikiPageItemReaderTimeTest : BehaviorSpec() {
 
-    @Autowired
-    private lateinit var optimizedWikiPageItemReader: ItemStreamReader<WikiPage>
-
-    override fun extensions() = listOf(SpringExtension)
-
     init {
-        Given(".xml.bz2 파일이 주어졌을 때") {
+        xGiven("kowiki-20250820-pages-articles-multistream1.xml-p1p82407.bz2 파일이 주어졌을 때") {
+            val filePath = "${System.getProperty("user.home")}/bigdata/kowiki-20250820-pages-articles-multistream1.xml-p1p82407.bz2"
+            val reader = OptimizedWikiPageItemReader(FileInputStream(filePath))
             When("WikiPageItemReader가 파일을 읽으면") {
-                optimizedWikiPageItemReader.open(ExecutionContext())
+                reader.open(ExecutionContext())
 
-                Then("WikiPage 객체들이 올바르게 파싱된다") {
+                Then("WikiPage 객체들이 올바르게 파싱되고 성능이 측정된다") {
                     var pageCount = 0
                     var totalReadTime = 0L
 
                     // 전체 파일 읽기 시간 측정
                     val totalTime = measureTimeMillis {
-                        var page: WikiPage? = optimizedWikiPageItemReader.read()
+                        var page: WikiPage? = reader.read()
 
                         // 파일 끝까지 모든 page를 읽으면서 검증
                         while (page != null) {
@@ -44,7 +34,7 @@ class OptimizedWikiPageItemReaderTimeTest : BehaviorSpec() {
 
                             // 다음 page 읽기 시간 측정
                             val readTime = measureTimeMillis {
-                                page = optimizedWikiPageItemReader.read()
+                                page = reader.read()
                             }
                             totalReadTime += readTime
                         }
@@ -62,7 +52,7 @@ class OptimizedWikiPageItemReaderTimeTest : BehaviorSpec() {
                     println("검증 및 기타 처리 시간: ${totalTime - totalReadTime}ms")
                     println("===================================")
 
-                    optimizedWikiPageItemReader.close()
+                    reader.close()
                 }
             }
         }
