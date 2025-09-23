@@ -1,9 +1,7 @@
-package com.sandro.realtime.harvest.domain
+package com.sandro.realtime.harvest.wiki.domain
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
-@JacksonXmlRootElement(localName = "contributor")
 data class WikiContributor(
     @field:JacksonXmlProperty(localName = "username")
     val username: String? = null,
@@ -12,5 +10,5 @@ data class WikiContributor(
     val id: Long? = null,
 
     @field:JacksonXmlProperty(localName = "ip")
-    val ip: String? = null
+    val ip: String? = null  // contributor가 익명인 경우 IP 주소
 )

@@ -1,7 +1,7 @@
-package com.sandro.realtime.harvest.batch
+package com.sandro.realtime.harvest.wiki.batch
 
-import com.sandro.realtime.harvest.domain.WikiPage
-import com.sandro.realtime.harvest.service.WikiPageStorageService
+import com.sandro.realtime.harvest.wiki.domain.WikiPage
+import com.sandro.realtime.harvest.wiki.service.WikiPageStorageService
 import org.slf4j.LoggerFactory
 import org.springframework.batch.item.Chunk
 import org.springframework.batch.item.ItemWriter

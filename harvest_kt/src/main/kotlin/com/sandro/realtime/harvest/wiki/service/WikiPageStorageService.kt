@@ -1,9 +1,9 @@
-package com.sandro.realtime.harvest.service
+package com.sandro.realtime.harvest.wiki.service
 
-import com.sandro.realtime.harvest.domain.SourceContent
-import com.sandro.realtime.harvest.domain.WikiPage
-import com.sandro.realtime.harvest.event.WikiPagesBatchProcessedEvent
-import com.sandro.realtime.harvest.repository.WikiPageRepository
+import com.sandro.realtime.harvest.common.domain.SourceContent
+import com.sandro.realtime.harvest.wiki.domain.WikiPage
+import com.sandro.realtime.harvest.wiki.event.WikiPagesBatchProcessedEvent
+import com.sandro.realtime.harvest.wiki.repository.WikiPageRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 

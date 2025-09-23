@@ -1,10 +1,10 @@
-package com.sandro.realtime.harvest.service
+package com.sandro.realtime.harvest.common.service
 
 import com.sandro.realtime.common.KafkaTopic
-import com.sandro.realtime.harvest.domain.SourceContent
-import com.sandro.realtime.harvest.domain.SourceType
+import com.sandro.realtime.harvest.common.domain.SourceContent
+import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.event.NewsArticlesBatchProcessedEvent
-import com.sandro.realtime.harvest.event.WikiPagesBatchProcessedEvent
+import com.sandro.realtime.harvest.wiki.event.WikiPagesBatchProcessedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
 import org.springframework.kafka.core.KafkaTemplate

@@ -1,9 +1,9 @@
-package com.sandro.realtime.harvest.service
+package com.sandro.realtime.harvest.common.service
 
 import com.sandro.realtime.common.KafkaTopic
-import com.sandro.realtime.harvest.domain.SourceContent
-import com.sandro.realtime.harvest.domain.SourceType
-import com.sandro.realtime.harvest.event.WikiPagesBatchProcessedEvent
+import com.sandro.realtime.harvest.common.domain.SourceContent
+import com.sandro.realtime.harvest.common.domain.SourceType
+import com.sandro.realtime.harvest.wiki.event.WikiPagesBatchProcessedEvent
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.junit.jupiter.api.BeforeEach

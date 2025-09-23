@@ -1,9 +1,11 @@
-package com.sandro.realtime.harvest.batch
+package com.sandro.realtime.harvest.wiki.batch
 
+import com.ctc.wstx.api.WstxInputProperties
+import com.ctc.wstx.stax.WstxInputFactory
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.sandro.realtime.harvest.domain.WikiPage
+import com.sandro.realtime.harvest.wiki.domain.WikiPage
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 import org.springframework.batch.item.ExecutionContext
 import org.springframework.batch.item.ItemStreamException
@@ -13,8 +15,6 @@ import java.io.InputStream
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamReader
-import com.ctc.wstx.api.WstxInputProperties
-import com.ctc.wstx.stax.WstxInputFactory
 
 /**
  * Wikipedia 덤프 파일을 위한 최적화된 ItemReader
@@ -38,17 +38,17 @@ class OptimizedWikiPageItemReader(
         // Woodstox 고성능 설정
         setProperty(WstxInputProperties.P_INPUT_BUFFER_LENGTH, 64 * 1024)  // 64KB 입력 버퍼
         setProperty(WstxInputProperties.P_MIN_TEXT_SEGMENT, 1024)  // 텍스트 세그먼트 최소 크기
-        
+
         // 표준 최적화 설정
         setProperty(XMLInputFactory.IS_COALESCING, true)  // 텍스트 노드 병합
         setProperty(XMLInputFactory.IS_VALIDATING, false)  // 검증 비활성화
         setProperty(XMLInputFactory.SUPPORT_DTD, false)  // DTD 지원 비활성화
         setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false)  // 네임스페이스 비활성화 (Wikipedia 덤프에서 불필요)
-        
+
         // 보안 설정
         setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false)
         setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false)
-        
+
         // Woodstox 전용 최적화
         setProperty(WstxInputProperties.P_CACHE_DTDS, false)  // DTD 캐싱 비활성화 (사용하지 않으므로)
         setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 32 * 1024)  // 최대 속성 크기 제한

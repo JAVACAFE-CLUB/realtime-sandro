@@ -1,6 +1,6 @@
-package com.sandro.realtime.harvest.batch
+package com.sandro.realtime.harvest.wiki.batch
 
-import com.sandro.realtime.harvest.domain.WikiPage
+import com.sandro.realtime.harvest.wiki.domain.WikiPage
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldNotBe
 import org.springframework.batch.item.ExecutionContext

@@ -1,4 +1,4 @@
-package com.sandro.realtime.harvest.domain
+package com.sandro.realtime.harvest.wiki.domain
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement

@@ -1,8 +1,8 @@
-package com.sandro.realtime.harvest.repository
+package com.sandro.realtime.harvest.wiki.repository
 
-import com.sandro.realtime.harvest.domain.SourceContent
-import com.sandro.realtime.harvest.domain.SourceType
-import com.sandro.realtime.harvest.domain.WikiPage
+import com.sandro.realtime.harvest.common.domain.SourceContent
+import com.sandro.realtime.harvest.common.domain.SourceType
+import com.sandro.realtime.harvest.wiki.domain.WikiPage
 import org.slf4j.LoggerFactory
 import org.springframework.data.mongodb.core.BulkOperations
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -40,7 +40,7 @@ class WikiPageRepository(
         val sourceContents = mutableListOf<SourceContent>()
 
         pagesToUpdate.forEach { wikiPage ->
-            val sourceContent = SourceContent.fromWikiPage(wikiPage)
+            val sourceContent = fromWikiPage(wikiPage)
             sourceContents.add(sourceContent)
 
             val upsertQuery = Query.query(
@@ -59,7 +59,7 @@ class WikiPageRepository(
 
         return try {
             bulkOps.execute()
-            pagesToUpdate.map { SourceContent.fromWikiPage(it) }
+            pagesToUpdate.map { fromWikiPage(it) }
         } catch (e: Exception) {
             logger.error("Failed to bulk upsert wiki pages: count=${wikiPages.size}", e)
             throw e
@@ -94,5 +94,9 @@ class WikiPageRepository(
 
         // revision이 변경된 페이지만 필터링
         return wikiPages.filter { wikiPage -> existingRevisions[wikiPage.id] != wikiPage.revision.id }
+    }
+
+    private fun fromWikiPage(wikiPage: WikiPage): SourceContent {
+        return SourceContent.from(SourceType.WIKIPEDIA, wikiPage)
     }
 }

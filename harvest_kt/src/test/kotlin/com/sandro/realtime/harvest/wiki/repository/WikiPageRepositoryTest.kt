@@ -1,12 +1,13 @@
-package com.sandro.realtime.harvest.repository
+package com.sandro.realtime.harvest.wiki.repository
 
 import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeKotlinBuilder
-import com.sandro.realtime.harvest.domain.SourceContent
-import com.sandro.realtime.harvest.domain.SourceType
-import com.sandro.realtime.harvest.domain.WikiPage
-import com.sandro.realtime.harvest.domain.WikiRevision
+import com.sandro.realtime.harvest.common.domain.SourceContent
+import com.sandro.realtime.harvest.common.domain.SourceType
+import com.sandro.realtime.harvest.common.repository.SourceContentRepository
+import com.sandro.realtime.harvest.wiki.domain.WikiPage
+import com.sandro.realtime.harvest.wiki.domain.WikiRevision
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.BeforeEach
@@ -143,7 +144,7 @@ class WikiPageRepositoryTest {
             .setExp(WikiPage::revision, revision)
             .sample()
 
-        sourceContentRepository.save(SourceContent.fromWikiPage(wikiPage))
+        sourceContentRepository.save(fromWikiPage(wikiPage))
 
         // when
         val result = wikiPageRepository.bulkUpsertWithRevisionCheck(listOf(wikiPage))
@@ -164,5 +165,9 @@ class WikiPageRepositoryTest {
         (savedContent["id"] as Number).toLong() shouldBe 1L
         ((savedContent["revision"] as Map<*, *>)["id"] as Number).toLong() shouldBe 100L  // revision은 그대로
         (savedContent["title"] as String) shouldBe "기존 페이지"  // 제목도 변경되지 않음
+    }
+
+    private fun fromWikiPage(wikiPage: WikiPage): SourceContent {
+        return SourceContent.from(SourceType.WIKIPEDIA, wikiPage)
     }
 }

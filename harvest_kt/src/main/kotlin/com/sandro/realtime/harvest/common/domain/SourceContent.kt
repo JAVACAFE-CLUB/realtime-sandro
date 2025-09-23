@@ -1,4 +1,4 @@
-package com.sandro.realtime.harvest.domain
+package com.sandro.realtime.harvest.common.domain
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.data.annotation.Id
@@ -24,10 +24,6 @@ data class SourceContent(
                 type = sourceType,
                 content = objectMapper.convertValue(sourceObject, Map::class.java) as Map<String, Any>
             )
-        }
-
-        fun fromWikiPage(wikiPage: WikiPage): SourceContent {
-            return from(SourceType.WIKIPEDIA, wikiPage)
         }
     }
 }

@@ -1,7 +1,7 @@
-package com.sandro.realtime.harvest.config
+package com.sandro.realtime.harvest.common.config
 
-import com.sandro.realtime.harvest.domain.SourceContent
-import com.sandro.realtime.harvest.domain.SourceType
+import com.sandro.realtime.harvest.common.domain.SourceContent
+import com.sandro.realtime.harvest.common.domain.SourceType
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.EventListener

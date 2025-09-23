@@ -1,8 +1,8 @@
-package com.sandro.realtime.harvest.batch.config
+package com.sandro.realtime.harvest.wiki.batch.config
 
-import com.sandro.realtime.harvest.batch.OptimizedWikiPageItemReader
-import com.sandro.realtime.harvest.batch.WikiPageWriter
-import com.sandro.realtime.harvest.domain.WikiPage
+import com.sandro.realtime.harvest.wiki.batch.OptimizedWikiPageItemReader
+import com.sandro.realtime.harvest.wiki.batch.WikiPageWriter
+import com.sandro.realtime.harvest.wiki.domain.WikiPage
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
 import org.springframework.batch.core.job.builder.JobBuilder
