@@ -20,6 +20,12 @@ dependencies {
 
     // Kafka
     implementation("org.springframework.kafka:spring-kafka")
+    
+    // WebClient for HTTP calls
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    
+    // HTML parsing
+    implementation("org.jsoup:jsoup:1.18.1")
 
     // Database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

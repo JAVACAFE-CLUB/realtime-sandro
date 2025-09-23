@@ -70,8 +70,6 @@ batch:
   wiki:
     file:
       path: file:${user.home}/bigdata/kowiki-20250820-pages-articles-multistream1.xml-p1p82407.bz2
-  news:
-    url: https://news.naver.com/
 
 # 로깅 설정
 logging:
