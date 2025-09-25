@@ -1,23 +1,25 @@
-package com.sandro.realtime.harvest.util
+package com.sandro.realtime.harvest.news.util
 
-import com.sandro.realtime.harvest.domain.NewsArticle
+import com.sandro.realtime.harvest.news.domain.NewsArticle
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * 네이버 뉴스 기사 HTML에서 데이터를 추출하는 유틸리티 클래스
+ * 네이버 뉴스 기사 HTML에서 데이터를 추출하는 구현체
  */
-object NewsArticleExtractor {
+@Component
+class NaverNewsArticleExtractor : NewsArticleExtractor {
 
     /**
-     * HTML 문자열에서 뉴스 기사 데이터를 추출합니다.
+     * HTML 문자열에서 네이버 뉴스 기사 데이터를 추출합니다.
      *
      * @param html HTML 문자열
      * @return NewsArticle 객체
      */
-    fun extractArticle(html: String): NewsArticle {
+    override fun extractArticle(html: String): NewsArticle {
         val doc = Jsoup.parse(html)
 
         return NewsArticle(
@@ -81,7 +83,7 @@ object NewsArticleExtractor {
     private fun extractPublishDate(doc: Document): LocalDateTime? {
         // data-date-time 속성에서 추출 (형식: "2025-09-23 19:07:44")
         val dateTimeAttr = doc.selectFirst("._ARTICLE_DATE_TIME")?.attr("data-date-time")
-        
+
         return if (!dateTimeAttr.isNullOrEmpty()) {
             try {
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

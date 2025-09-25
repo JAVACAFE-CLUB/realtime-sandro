@@ -1,4 +1,4 @@
-package com.sandro.realtime.harvest.util
+package com.sandro.realtime.harvest.news.util
 
 import java.io.BufferedReader
 import java.io.InputStreamReader

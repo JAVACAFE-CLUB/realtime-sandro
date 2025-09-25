@@ -1,4 +1,4 @@
-package com.sandro.realtime.harvest.service
+package com.sandro.realtime.harvest.news.service
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan

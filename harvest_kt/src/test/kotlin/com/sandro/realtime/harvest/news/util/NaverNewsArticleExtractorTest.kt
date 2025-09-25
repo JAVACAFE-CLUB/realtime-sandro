@@ -1,6 +1,6 @@
-package com.sandro.realtime.harvest.util
+package com.sandro.realtime.harvest.news.util
 
-import com.sandro.realtime.harvest.domain.NewsArticle
+import com.sandro.realtime.harvest.news.domain.NewsArticle
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -12,18 +12,22 @@ import java.io.File
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class NewsArticleExtractorTest : DescribeSpec({
+class NaverNewsArticleExtractorTest : DescribeSpec({
 
     lateinit var sampleHtml: String
     lateinit var extractedArticle: NewsArticle
+    lateinit var extractor: NaverNewsArticleExtractor
 
     beforeSpec {
+        // Extractor 인스턴스 생성
+        extractor = NaverNewsArticleExtractor()
+
         // data-sample 파일에서 HTML 읽기
         val htmlFile = File("/Users/sandeulpark/personal/realtime/data-sample/naver_article.html")
         sampleHtml = htmlFile.readText()
 
         // 한 번만 추출해서 여러 테스트에서 사용
-        extractedArticle = NewsArticleExtractor.extractArticle(sampleHtml)
+        extractedArticle = extractor.extractArticle(sampleHtml)
 
         println("✅ 테스트용 HTML 로드 및 파싱 완료")
         println("📊 추출된 기사 정보:")
@@ -34,7 +38,7 @@ class NewsArticleExtractorTest : DescribeSpec({
         println("  - 언론사ID: ${extractedArticle.officeId}")
     }
 
-    describe("NewsArticleExtractor") {
+    describe("NaverNewsArticleExtractor") {
 
         context("extractArticle") {
             it("HTML에서 기사 객체를 성공적으로 추출해야 한다") {
@@ -116,7 +120,7 @@ class NewsArticleExtractorTest : DescribeSpec({
 
         context("빈 HTML 처리") {
             it("빈 HTML에서는 빈 값들을 반환해야 한다") {
-                val emptyArticle = NewsArticleExtractor.extractArticle("")
+                val emptyArticle = extractor.extractArticle("")
 
                 emptyArticle.title shouldBe ""
                 emptyArticle.content shouldBe ""

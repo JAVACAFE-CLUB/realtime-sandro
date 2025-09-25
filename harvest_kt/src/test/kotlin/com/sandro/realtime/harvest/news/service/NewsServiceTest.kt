@@ -1,5 +1,6 @@
-package com.sandro.realtime.harvest.service
+package com.sandro.realtime.harvest.news.service
 
+import com.sandro.realtime.harvest.news.util.NaverNewsArticleExtractor
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.ints.shouldBeGreaterThan
@@ -17,6 +18,7 @@ class NewsServiceTest : DescribeSpec({
 
     lateinit var sharedHtml: String
     val mockHtmlFetcher = mockk<NewsHtmlFetcher>()
+    val newsArticleExtractor = NaverNewsArticleExtractor()
     lateinit var newsService: NewsService
 
     beforeSpec {
@@ -36,7 +38,7 @@ class NewsServiceTest : DescribeSpec({
         }
 
         // NewsService에 Mock 주입
-        newsService = NewsService(mockHtmlFetcher)
+        newsService = NewsService(mockHtmlFetcher, newsArticleExtractor)
     }
 
     describe("NewsService") {
@@ -109,28 +111,6 @@ class NewsServiceTest : DescribeSpec({
 
                 // then
                 urls shouldBe emptyList()
-            }
-        }
-
-        context("getNewsStatistics") {
-            it("뉴스 통계 정보를 정확히 반환해야 한다") {
-                runBlocking {
-                    // when
-                    val stats = newsService.getNewsStatistics()
-
-                    // then
-                    stats.htmlSize shouldBeGreaterThan 0
-                    stats.urlCount shouldBeGreaterThan 0
-                    stats.sampleUrls.size shouldBe minOf(3, stats.urlCount)
-
-                    println("📈 뉴스 통계:")
-                    println("  - HTML 크기: ${stats.htmlSize} bytes")
-                    println("  - URL 개수: ${stats.urlCount}")
-                    println("  - 샘플 URL들:")
-                    stats.sampleUrls.forEach { url ->
-                        println("    * $url")
-                    }
-                }
             }
         }
     }

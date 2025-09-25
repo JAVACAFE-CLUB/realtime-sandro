@@ -1,4 +1,4 @@
-package com.sandro.realtime.harvest.util
+package com.sandro.realtime.harvest.news.util
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldNotBeEmpty

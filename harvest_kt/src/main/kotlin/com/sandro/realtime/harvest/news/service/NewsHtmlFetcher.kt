@@ -1,4 +1,4 @@
-package com.sandro.realtime.harvest.service
+package com.sandro.realtime.harvest.news.service
 
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Service
@@ -10,10 +10,11 @@ import java.time.Duration
  */
 @Service
 class NewsHtmlFetcher {
-    
+
     companion object {
         private const val NAVER_NEWS_URL = "https://news.naver.com/"
-        private const val DEFAULT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        private const val DEFAULT_USER_AGENT =
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         private const val ACCEPT_HEADER = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
         private const val ACCEPT_LANGUAGE = "ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4"
         private const val ACCEPT_ENCODING = "gzip, deflate"

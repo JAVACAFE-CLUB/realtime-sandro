@@ -1,4 +1,4 @@
-package com.sandro.realtime.harvest.event
+package com.sandro.realtime.harvest.news.event
 
 import com.sandro.realtime.harvest.common.domain.SourceContent
 import org.springframework.context.ApplicationEvent

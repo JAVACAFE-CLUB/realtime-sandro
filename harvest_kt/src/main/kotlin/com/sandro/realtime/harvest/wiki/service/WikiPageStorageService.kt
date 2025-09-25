@@ -30,11 +30,8 @@ class WikiPageStorageService(
         val changedContents = wikiPageRepository.bulkUpsertWithRevisionCheck(wikiPages)
 
         // 이벤트 발행 (생성되거나 업데이트된 것들)
-        if (changedContents.isNotEmpty()) {
-            applicationEventPublisher.publishEvent(
-                WikiPagesBatchProcessedEvent(changedContents)
-            )
-        }
+        if (changedContents.isNotEmpty())
+            applicationEventPublisher.publishEvent(WikiPagesBatchProcessedEvent(changedContents))
 
         return changedContents
     }

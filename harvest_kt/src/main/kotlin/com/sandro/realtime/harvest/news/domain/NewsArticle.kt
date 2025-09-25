@@ -1,4 +1,4 @@
-package com.sandro.realtime.harvest.domain
+package com.sandro.realtime.harvest.news.domain
 
 import java.time.LocalDateTime
 
@@ -17,17 +17,4 @@ data class NewsArticle(
     val description: String?,
     val sectionId: String?,
     val gdid: String?
-)
-
-/**
- * 기사 메타 정보만 포함한 간단한 모델
- */
-data class NewsArticleMeta(
-    val title: String,
-    val author: String?,
-    val mediaName: String,
-    val articleId: String,
-    val officeId: String,
-    val imageUrl: String?,
-    val description: String?
 )

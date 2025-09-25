@@ -3,7 +3,7 @@ package com.sandro.realtime.harvest.common.service
 import com.sandro.realtime.common.KafkaTopic
 import com.sandro.realtime.harvest.common.domain.SourceContent
 import com.sandro.realtime.harvest.common.domain.SourceType
-import com.sandro.realtime.harvest.event.NewsArticlesBatchProcessedEvent
+import com.sandro.realtime.harvest.news.event.NewsArticlesBatchProcessedEvent
 import com.sandro.realtime.harvest.wiki.event.WikiPagesBatchProcessedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
