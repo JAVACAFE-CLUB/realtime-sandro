@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.11/ http://www.mediawiki.org/xml/export-0.11.xsd" version="0.11" xml:lang="ko">
+    <siteinfo>
+        <sitename>위키백과</sitename>
+        <dbname>kowiki</dbname>
+        <base>https://ko.wikipedia.org/wiki/%EC%9C%84%ED%82%A4%EB%B0%B1%EA%B3%BC:%EB%8C%80%EB%AC%B8</base>
+        <generator>MediaWiki 1.45.0-wmf.16</generator>
+        <case>first-letter</case>
+    </siteinfo>
+    <page>
+        <title>테스트 페이지 1</title>
+        <ns>0</ns>
+        <id>123</id>
+        <revision>
+            <id>456</id>
+            <timestamp>2025-01-01T00:00:00Z</timestamp>
+            <contributor>
+                <username>TestUser</username>
+                <id>789</id>
+            </contributor>
+            <model>wikitext</model>
+            <format>text/x-wiki</format>
+            <text bytes="100" sha1="abc123" xml:space="preserve">테스트 내용입니다.</text>
+        </revision>
+    </page>
+    <page>
+        <title>테스트 페이지 2</title>
+        <ns>0</ns>
+        <id>124</id>
+        <revision>
+            <id>457</id>
+            <timestamp>2025-01-01T01:00:00Z</timestamp>
+            <contributor>
+                <username>TestUser2</username>
+                <id>790</id>
+            </contributor>
+            <model>wikitext</model>
+            <format>text/x-wiki</format>
+            <text bytes="150" sha1="def456" xml:space="preserve">두 번째 테스트 내용입니다.</text>
+        </revision>
+    </page>
+</mediawiki>
