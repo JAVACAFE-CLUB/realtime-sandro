@@ -3,7 +3,7 @@ package com.sandro.realtime.harvest.common.service
 import com.sandro.realtime.common.KafkaTopic
 import com.sandro.realtime.harvest.common.domain.SourceContent
 import com.sandro.realtime.harvest.common.domain.SourceType
-import com.sandro.realtime.harvest.news.event.NewsArticlesBatchProcessedEvent
+import com.sandro.realtime.harvest.news.event.NewsArticleProcessedEvent
 import com.sandro.realtime.harvest.wiki.event.WikiPagesBatchProcessedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
@@ -38,17 +38,23 @@ class ContentKafkaService(
     }
 
     /**
-     * NewsArticle 배치 처리 완료 이벤트 처리 (비동기)
+     * 개별 뉴스 기사 처리 완료 이벤트 처리 (실시간)
      */
     @EventListener
-    fun handleNewsArticlesBatchProcessed(event: NewsArticlesBatchProcessedEvent) {
+    fun handleNewsArticleProcessed(event: NewsArticleProcessedEvent) {
         try {
-            val kafkaMessages = event.pages.map(ContentProcessedMessage::from)
+            val kafkaMessage = ContentProcessedMessage.from(event.sourceContent)
 
-            // 배치로 메시지 전송 (대량 데이터 처리 시 효율적)
-            sendBatchMessages(KafkaTopic.NEWS_CONTENT_PROCESSED, kafkaMessages)
+            kafkaTemplate.send(KafkaTopic.NEWS_CONTENT_PROCESSED, kafkaMessage)
+                .whenComplete { _, ex ->
+                    if (ex == null) {
+                        logger.debug("개별 뉴스 카프카 전송 성공: ${event.sourceContent.id}")
+                    } else {
+                        logger.error("개별 뉴스 카프카 전송 실패: ${event.sourceContent.id}", ex)
+                    }
+                }
         } catch (e: Exception) {
-            logger.error("Failed to send Kafka messages for news batch", e)
+            logger.error("개별 뉴스 카프카 메시지 처리 실패", e)
             // 카프카 전송 실패는 메인 프로세스에 영향을 주지 않음
         }
     }

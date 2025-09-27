@@ -55,9 +55,6 @@ spring:
         acks: all                 # 안정성 (모든 replica 확인)
         retries: 2147483647       # 최대 재시도 (멱등성 프로듀서 필수)
         max.in.flight.requests.per.connection: 5  # 연결당 최대 진행 중 요청
-        
-        # JSON 직렬화 설정
-        spring.json.type.mapping: ContentProcessedMessage:com.sandro.realtime.harvest.service.ContentProcessedMessage
 
 harvest:
   description: "대용량 파일 수집 시스템 - 수확기"

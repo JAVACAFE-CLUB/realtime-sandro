@@ -4,14 +4,12 @@ import com.sandro.realtime.harvest.news.domain.NewsArticle
 import com.sandro.realtime.harvest.news.util.NewsArticleExtractor
 import com.sandro.realtime.harvest.news.util.NewsUrlExtractor
 import org.springframework.stereotype.Service
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
 
 /**
  * 뉴스 HTML 받아오기와 URL 추출을 통합한 서비스
  */
 @Service
-class NewsService(
+class NewsCrawlingService(
     private val newsHtmlFetcher: NewsHtmlFetcher,
     private val newsArticleExtractor: NewsArticleExtractor
 ) {
@@ -34,19 +32,8 @@ class NewsService(
      */
     fun extractUrlsFromHtml(html: String): List<String> {
         return try {
-            // 임시 파일 생성
-            val tempFile = Files.createTempFile("naver_news", ".html")
-
-            // HTML을 임시 파일에 저장
-            Files.write(tempFile, html.toByteArray(), StandardOpenOption.WRITE)
-
-            // NewsUrlExtractor로 URL 추출
-            val urls = NewsUrlExtractor.extractNewsUrls(tempFile.toAbsolutePath().toString())
-
-            // 임시 파일 삭제
-            Files.deleteIfExists(tempFile)
-
-            urls
+            // 개선된 문자열 직접 처리 방식
+            NewsUrlExtractor.extractNewsUrls(html)
         } catch (e: Exception) {
             throw RuntimeException("Failed to extract URLs from HTML", e)
         }

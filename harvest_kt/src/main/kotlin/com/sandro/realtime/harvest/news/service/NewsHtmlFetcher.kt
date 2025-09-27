@@ -50,24 +50,5 @@ class NewsHtmlFetcher {
         }
     }
 
-    /**
-     * HTML 크기를 바이트 단위로 반환합니다.
-     *
-     * @param html HTML 문자열
-     * @return 바이트 크기
-     */
-    fun getHtmlSize(html: String): Int {
-        return html.toByteArray(Charsets.UTF_8).size
-    }
 
-    /**
-     * HTML에 특정 패턴이 포함되어 있는지 확인합니다.
-     *
-     * @param html HTML 문자열
-     * @param pattern 찾을 패턴
-     * @return 포함 여부
-     */
-    fun containsPattern(html: String, pattern: String): Boolean {
-        return html.contains(pattern)
-    }
 }

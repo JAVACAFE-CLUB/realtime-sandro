@@ -35,3 +35,6 @@ logging:
   level:
     com.sandro.realtime.harvest: DEBUG
     org.springframework.batch: WARN
+
+scheduling:
+  enabled: false

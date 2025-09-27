@@ -4,26 +4,25 @@ import com.sandro.realtime.common.KafkaTopic
 import com.sandro.realtime.harvest.common.domain.SourceContent
 import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.wiki.event.WikiPagesBatchProcessedEvent
-import org.apache.kafka.clients.producer.Producer
-import org.apache.kafka.common.serialization.StringSerializer
+import org.apache.kafka.clients.consumer.Consumer
+import org.apache.kafka.common.serialization.StringDeserializer
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.kafka.config.KafkaListenerEndpointRegistry
-import org.springframework.kafka.core.DefaultKafkaProducerFactory
-import org.springframework.kafka.listener.MessageListenerContainer
-import org.springframework.kafka.support.serializer.JsonSerializer
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.support.serializer.JsonDeserializer
 import org.springframework.kafka.test.EmbeddedKafkaBroker
 import org.springframework.kafka.test.context.EmbeddedKafka
-import org.springframework.kafka.test.utils.ContainerTestUtils
 import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
+import java.time.Duration
 import java.time.LocalDateTime
-import java.util.function.Consumer
 
+// TODO: kotest로 변환
 @ActiveProfiles("test")
 @SpringBootTest
 @EmbeddedKafka(partitions = 1, topics = [KafkaTopic.WIKI_CONTENT_PROCESSED])
@@ -36,41 +35,51 @@ class ContentKafkaServiceTest {
     @Autowired
     private lateinit var embeddedKafkaBroker: EmbeddedKafkaBroker
 
-    @Autowired
-    private lateinit var kafkaListenerEndpointRegistry: KafkaListenerEndpointRegistry
-
-    private lateinit var producer: Producer<String, ContentProcessedMessage>
+    private lateinit var consumer: Consumer<String, ContentProcessedMessage>
 
     @BeforeEach
     fun setUp() {
-        producer = DefaultKafkaProducerFactory<String, ContentProcessedMessage>(
-            KafkaTestUtils.producerProps(embeddedKafkaBroker),
-            StringSerializer(),
-            JsonSerializer()
-        ).createProducer()
-
-        kafkaListenerEndpointRegistry.getAllListenerContainers()
-            .forEach(Consumer { messageListenerContainer: MessageListenerContainer? ->
-                if (messageListenerContainer!!.isAutoStartup) ContainerTestUtils.waitForAssignment(
-                    messageListenerContainer,
-                    embeddedKafkaBroker.partitionsPerTopic
-                )
-            })
+        val consumerProps = KafkaTestUtils.consumerProps("test-group", "true", embeddedKafkaBroker)
+        val consumerFactory = DefaultKafkaConsumerFactory(
+            consumerProps,
+            StringDeserializer(),
+            JsonDeserializer(ContentProcessedMessage::class.java).apply {
+                addTrustedPackages("*")
+            }
+        )
+        consumer = consumerFactory.createConsumer()
+        embeddedKafkaBroker.consumeFromAllEmbeddedTopics(consumer)
     }
 
     @Test
-    fun `WikiPagesBatchProcessedEvent 처리 테스트`() {
+    fun `여러 페이지를 포함한 이벤트 처리 시 모든 메시지가 발송되는지 검증`() {
         // given
-        val sourceContent = SourceContent(
-            id = "test-id",
-            type = SourceType.WIKIPEDIA,
-            processedAt = LocalDateTime.now(),
-            content = mapOf("title" to "Test Page", "text" to "Test Content")
+        val sourceContents = listOf(
+            SourceContent(
+                id = "test-id-1",
+                type = SourceType.WIKIPEDIA,
+                processedAt = LocalDateTime.now(),
+                content = mapOf("title" to "Page 1", "text" to "Content 1")
+            ),
+            SourceContent(
+                id = "test-id-2",
+                type = SourceType.WIKIPEDIA,
+                processedAt = LocalDateTime.now(),
+                content = mapOf("title" to "Page 2", "text" to "Content 2")
+            )
         )
 
-        val event = WikiPagesBatchProcessedEvent(listOf(sourceContent))
+        val event = WikiPagesBatchProcessedEvent(sourceContents)
 
-        // when & then
+        // when
         eventPublisher.publishEvent(event)
+
+        // then
+        val records = KafkaTestUtils.getRecords(consumer, Duration.ofSeconds(5))
+
+        assertThat(records).hasSize(2)
+
+        val messageIds = records.map { it.value().id }
+        assertThat(messageIds).containsExactlyInAnyOrder("test-id-1", "test-id-2")
     }
 }

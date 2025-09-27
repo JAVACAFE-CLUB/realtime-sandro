@@ -6,12 +6,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotBeEmpty
-import org.junit.jupiter.api.TestInstance
-import org.springframework.boot.test.context.SpringBootTest
 import java.io.File
 
-@SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class NaverNewsArticleExtractorTest : DescribeSpec({
 
     lateinit var sampleHtml: String
@@ -28,14 +24,6 @@ class NaverNewsArticleExtractorTest : DescribeSpec({
 
         // 한 번만 추출해서 여러 테스트에서 사용
         extractedArticle = extractor.extractArticle(sampleHtml)
-
-        println("✅ 테스트용 HTML 로드 및 파싱 완료")
-        println("📊 추출된 기사 정보:")
-        println("  - 제목: ${extractedArticle.title}")
-        println("  - 기자: ${extractedArticle.author}")
-        println("  - 언론사: ${extractedArticle.mediaName}")
-        println("  - 기사ID: ${extractedArticle.articleId}")
-        println("  - 언론사ID: ${extractedArticle.officeId}")
     }
 
     describe("NaverNewsArticleExtractor") {
@@ -46,63 +34,55 @@ class NaverNewsArticleExtractorTest : DescribeSpec({
             }
 
             it("제목을 올바르게 추출해야 한다") {
-                extractedArticle.title.shouldNotBeEmpty()
-                extractedArticle.title shouldContain "Samsung"
-                extractedArticle.title shouldContain "supercycle"
-                println("✅ 제목 추출 검증: ${extractedArticle.title}")
+                extractedArticle.title shouldBe "Samsung sets market cap record as analysts forecast chip 'supercycle' will end 'winter'"
             }
 
             it("기자명을 올바르게 추출해야 한다") {
-                extractedArticle.author?.shouldNotBeEmpty()
-                extractedArticle.author shouldContain "기자"
-                println("✅ 기자명 추출 검증: ${extractedArticle.author}")
+                extractedArticle.author shouldBe "PARK EUN-JEE 기자"
             }
 
             it("언론사명을 올바르게 추출해야 한다") {
-                extractedArticle.mediaName.shouldNotBeEmpty()
-                extractedArticle.mediaName shouldBe "코리아중앙데일리"
-                println("✅ 언론사명 추출 검증: ${extractedArticle.mediaName}")
+                extractedArticle.officeName shouldBe "코리아중앙데일리"
             }
 
             it("기사 ID를 올바르게 추출해야 한다") {
-                extractedArticle.articleId.shouldNotBeEmpty()
                 extractedArticle.articleId shouldBe "0000077240"
-                println("✅ 기사ID 추출 검증: ${extractedArticle.articleId}")
             }
 
             it("언론사 ID를 올바르게 추출해야 한다") {
-                extractedArticle.officeId.shouldNotBeEmpty()
                 extractedArticle.officeId shouldBe "640"
-                println("✅ 언론사ID 추출 검증: ${extractedArticle.officeId}")
             }
 
             it("대표 이미지 URL을 올바르게 추출해야 한다") {
-                extractedArticle.imageUrl?.shouldNotBeEmpty()
-                extractedArticle.imageUrl shouldContain "https://imgnews.pstatic.net"
-                println("✅ 이미지URL 추출 검증: ${extractedArticle.imageUrl}")
+                extractedArticle.imageUrl shouldBe "https://imgnews.pstatic.net/image/640/2025/09/23/0000077240_001_20250923195112615.jpg?type=w800"
             }
 
             it("기사 설명을 올바르게 추출해야 한다") {
-                extractedArticle.description?.shouldNotBeEmpty()
-                extractedArticle.description shouldContain "memory chip"
-                println("✅ 기사 설명 추출 검증: ${extractedArticle.description}")
+                extractedArticle.description shouldBe "An anticipated memory chip “supercycle\" forecast in a recent Morgan Stanley report and elsewhere is lifting the outlook"
             }
 
             it("섹션 ID를 올바르게 추출해야 한다") {
-                extractedArticle.sectionId?.shouldNotBeEmpty()
                 extractedArticle.sectionId shouldBe "101"
-                println("✅ 섹션ID 추출 검증: ${extractedArticle.sectionId}")
             }
 
             it("GDID를 올바르게 추출해야 한다") {
-                extractedArticle.gdid?.shouldNotBeEmpty()
-                extractedArticle.gdid shouldContain "88166597"
-                println("✅ GDID 추출 검증: ${extractedArticle.gdid}")
+                extractedArticle.gdid shouldContain "88166597_000000000000000000077240"
             }
 
             it("발행일시를 올바르게 추출해야 한다") {
-                extractedArticle.publishDate shouldNotBe null
-                println("✅ 발행일시 추출 검증: ${extractedArticle.publishDate}")
+                extractedArticle.createdAt shouldBe "2025-09-23 19:07:44"
+            }
+
+            it("최종수정일시를 추출할 수 있어야 한다") {
+                extractedArticle.lastModifiedAt shouldBe "2025-09-23 19:49:12"
+            }
+
+            it("기사 원문 URL을 추출할 수 있어야 한다") {
+                extractedArticle.originUrl shouldBe "https://koreajoongangdaily.joins.com/news/2025-09-23/business/industry/Samsung-sets-market-cap-record-as-analysts-forecast-chip-supercycle-will-end-winter/2406296"
+            }
+
+            it("언론사 카테고리를 추출할 수 있어야 한다") {
+                extractedArticle.officeCategory shouldBe "전문지"
             }
         }
 
@@ -124,10 +104,13 @@ class NaverNewsArticleExtractorTest : DescribeSpec({
 
                 emptyArticle.title shouldBe ""
                 emptyArticle.content shouldBe ""
-                emptyArticle.author shouldBe null
-                emptyArticle.mediaName shouldBe ""
+                emptyArticle.author shouldBe ""
+                emptyArticle.officeName shouldBe ""
                 emptyArticle.articleId shouldBe ""
                 emptyArticle.officeId shouldBe ""
+                emptyArticle.lastModifiedAt shouldBe null
+                emptyArticle.originUrl shouldBe ""
+                emptyArticle.officeCategory shouldBe ""
             }
         }
     }

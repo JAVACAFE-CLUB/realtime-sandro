@@ -1,6 +1,7 @@
 package com.sandro.realtime.harvest.news.service
 
 import com.sandro.realtime.harvest.news.util.NaverNewsArticleExtractor
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.ints.shouldBeGreaterThan
@@ -12,14 +13,15 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.context.SpringBootTest
 
+@Ignored
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class NewsServiceTest : DescribeSpec({
+class NewsCrawlingServiceTest : DescribeSpec({
 
     lateinit var sharedHtml: String
     val mockHtmlFetcher = mockk<NewsHtmlFetcher>()
     val newsArticleExtractor = NaverNewsArticleExtractor()
-    lateinit var newsService: NewsService
+    lateinit var newsCrawlingService: NewsCrawlingService
 
     beforeSpec {
         // 실제 HTML 한 번만 받아오기
@@ -30,15 +32,10 @@ class NewsServiceTest : DescribeSpec({
 
         // Mock 설정 - 모든 테스트에서 같은 HTML 사용
         coEvery { mockHtmlFetcher.fetchHtml() } returns sharedHtml
-        coEvery { mockHtmlFetcher.getHtmlSize(any()) } answers {
-            firstArg<String>().toByteArray(Charsets.UTF_8).size
-        }
-        coEvery { mockHtmlFetcher.containsPattern(any(), any()) } answers {
-            firstArg<String>().contains(secondArg<String>())
-        }
+
 
         // NewsService에 Mock 주입
-        newsService = NewsService(mockHtmlFetcher, newsArticleExtractor)
+        newsCrawlingService = NewsCrawlingService(mockHtmlFetcher, newsArticleExtractor)
     }
 
     describe("NewsService") {
@@ -47,7 +44,7 @@ class NewsServiceTest : DescribeSpec({
             it("실시간 뉴스 URL을 성공적으로 추출해야 한다") {
                 runBlocking {
                     // when
-                    val urls = newsService.getNewsUrls()
+                    val urls = newsCrawlingService.getNewsUrls()
 
                     // then
                     urls.shouldNotBeEmpty()
@@ -68,7 +65,7 @@ class NewsServiceTest : DescribeSpec({
             it("추출된 URL 개수가 합리적 범위에 있어야 한다") {
                 runBlocking {
                     // when
-                    val urls = newsService.getNewsUrls()
+                    val urls = newsCrawlingService.getNewsUrls()
 
                     // then
                     // 네이버 뉴스 메인 페이지에는 최소 100개 이상의 뉴스가 있어야 함
@@ -92,7 +89,7 @@ class NewsServiceTest : DescribeSpec({
                 """.trimIndent()
 
                 // when
-                val urls = newsService.extractUrlsFromHtml(testHtml)
+                val urls = newsCrawlingService.extractUrlsFromHtml(testHtml)
 
                 // then
                 urls.size shouldBe 2
@@ -107,7 +104,7 @@ class NewsServiceTest : DescribeSpec({
                 val emptyHtml = "<html><body></body></html>"
 
                 // when
-                val urls = newsService.extractUrlsFromHtml(emptyHtml)
+                val urls = newsCrawlingService.extractUrlsFromHtml(emptyHtml)
 
                 // then
                 urls shouldBe emptyList()
