@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: portal
+  profiles:
+    active: dev
+
+server:
+  port: 8083
+
+# Portal 모듈 설정
+portal:
+  description: "서빙 시스템 - 차원문"
+  version: 1.0.0
+  api:
+    rate-limit:
+      enabled: true
+      requests-per-minute: 100
