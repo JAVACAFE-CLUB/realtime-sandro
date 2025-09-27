@@ -1,20 +1,46 @@
 package com.sandro.realtime.harvest.common.domain
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.sandro.realtime.harvest.news.domain.NewsArticle
+import com.sandro.realtime.harvest.wiki.domain.WikiPage
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.index.CompoundIndex
+import org.springframework.data.mongodb.core.index.CompoundIndexes
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
 @Document(collection = "sourceContents")
+@CompoundIndexes(
+    CompoundIndex(
+        name = "wiki_page_unique_idx",
+        def = "{'type': 1, 'content.id': 1}",
+        unique = true,
+        partialFilter = "{'type': 'WIKIPEDIA'}"
+    ),
+    CompoundIndex(
+        name = "wiki_revision_query_idx",
+        def = "{'type': 1, 'content.id': 1, 'content.revision.id': 1}",
+        partialFilter = "{'type': 'WIKIPEDIA'}"
+    ),
+    CompoundIndex(
+        name = "news_article_unique_idx",
+        def = "{'type': 1, 'content.articleId': 1}",
+        unique = true,
+        partialFilter = "{'type': 'NEWS'}"
+    )
+)
 data class SourceContent(
     @Id
     val id: String? = null,
     val type: SourceType,
-    val processedAt: LocalDateTime = LocalDateTime.now(), // 처리일시
-    val content: Map<String, Any>
+    var processedAt: LocalDateTime = LocalDateTime.now(), // 처리일시
+    var content: Map<String, Any>
 ) {
     companion object {
-        private val objectMapper = ObjectMapper()
+        private val objectMapper = ObjectMapper().apply {
+            registerModule(JavaTimeModule())
+        }
 
         /**
          * 범용적인 객체에서 SourceContent로 변환
@@ -25,7 +51,34 @@ data class SourceContent(
                 content = objectMapper.convertValue(sourceObject, Map::class.java) as Map<String, Any>
             )
         }
+
+        fun from(article: NewsArticle): SourceContent {
+            return from(SourceType.NEWS, article)
+        }
+
+        fun from(wikiPage: WikiPage): SourceContent {
+            return from(SourceType.WIKIPEDIA, wikiPage)
+        }
     }
+
+    fun update(content: SourceContent) {
+        this.content = content.content
+        this.processedAt = LocalDateTime.now()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SourceContent
+
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id?.hashCode() ?: 0
+    }
+
 }
 
 /**
