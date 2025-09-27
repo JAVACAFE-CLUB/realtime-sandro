@@ -97,6 +97,6 @@ class WikiPageRepository(
     }
 
     private fun fromWikiPage(wikiPage: WikiPage): SourceContent {
-        return SourceContent.from(SourceType.WIKIPEDIA, wikiPage)
+        return SourceContent.from(wikiPage)
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
 
+// TODO: kotest로 변환
 @ActiveProfiles("test")
 @DataMongoTest
 class WikiPageRepositoryTest {
