@@ -6,7 +6,7 @@ on:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
@@ -19,9 +19,16 @@ jobs:
           java-version: "21"
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2.5.1
-        with:
-          cache-read-only: false
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build project
         run: ./gradlew build
+
+      # 테스트 실패 시 테스트 리포트 업로드
+      - name: Upload report files
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            harvest/build/reports/tests/test/
