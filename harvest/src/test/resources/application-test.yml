@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+  data:
+    mongodb:
+      port: 0  # 자동으로 사용 가능한 포트 할당
+
+batch:
+  chunk:
+    size: 10
+  wiki:
+    file:
+      path: classpath:sample-wiki.xml.bz2
+
+# 임베디드 MongoDB 설정 (ARM64 macOS 지원 버전)
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.2
+
+logging:
+  level:
+    com.sandro.realtime.harvest: DEBUG
+    org.springframework.batch: WARN
+
+scheduling:
+  enabled: false

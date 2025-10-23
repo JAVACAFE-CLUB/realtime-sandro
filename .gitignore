@@ -38,3 +38,9 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+.DS_Store
+
+.serena
+
+__pycache__
