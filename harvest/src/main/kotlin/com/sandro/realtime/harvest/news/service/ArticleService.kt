@@ -1,7 +1,7 @@
 package com.sandro.realtime.harvest.news.service
 
+import com.sandro.realtime.common.domain.SourceType
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.common.repository.SourceContentRepository
 import com.sandro.realtime.harvest.common.util.SourceContentMapper
 import com.sandro.realtime.harvest.news.domain.NewsArticle

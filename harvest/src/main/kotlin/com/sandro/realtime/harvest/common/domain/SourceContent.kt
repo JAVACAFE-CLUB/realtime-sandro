@@ -1,5 +1,6 @@
 package com.sandro.realtime.harvest.common.domain
 
+import com.sandro.realtime.common.domain.SourceType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.index.CompoundIndexes
@@ -55,14 +56,4 @@ data class SourceContent(
         return id?.hashCode() ?: 0
     }
 
-}
-
-/**
- * 수집 가능한 소스 타입 정의
- */
-enum class SourceType {
-    WIKIPEDIA,      // 위키피디아
-    NEWS,           // 뉴스 기사
-    BLOG,           // 블로그 포스트
-    SOCIAL,         // 소셜 미디어
 }

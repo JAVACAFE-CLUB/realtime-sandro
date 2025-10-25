@@ -1,7 +1,7 @@
 package com.sandro.realtime.harvest.wiki.repository
 
+import com.sandro.realtime.common.domain.SourceType
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.common.util.SourceContentMapper
 import com.sandro.realtime.harvest.wiki.domain.WikiPage
 import org.slf4j.LoggerFactory

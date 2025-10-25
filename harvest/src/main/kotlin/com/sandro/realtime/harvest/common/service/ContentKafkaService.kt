@@ -1,15 +1,14 @@
 package com.sandro.realtime.harvest.common.service
 
 import com.sandro.realtime.common.KafkaTopic
+import com.sandro.realtime.common.message.ContentProcessedMessage
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.news.event.NewsArticleProcessedEvent
 import com.sandro.realtime.harvest.wiki.event.WikiPagesBatchProcessedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
@@ -28,7 +27,7 @@ class ContentKafkaService(
     @EventListener
     fun handleWikiPagesBatchProcessed(event: WikiPagesBatchProcessedEvent) {
         try {
-            val kafkaMessages = event.pages.map(ContentProcessedMessage::from)
+            val kafkaMessages = event.pages.map { it.toContentProcessedMessage() }
 
             sendBatchMessages(KafkaTopic.WIKI_CONTENT_PROCESSED, kafkaMessages)
         } catch (e: Exception) {
@@ -43,7 +42,7 @@ class ContentKafkaService(
     @EventListener
     fun handleNewsArticleProcessed(event: NewsArticleProcessedEvent) {
         try {
-            val kafkaMessage = ContentProcessedMessage.from(event.sourceContent)
+            val kafkaMessage = event.sourceContent.toContentProcessedMessage()
 
             kafkaTemplate.send(KafkaTopic.NEWS_CONTENT_PROCESSED, kafkaMessage)
                 .whenComplete { _, ex ->
@@ -84,22 +83,13 @@ class ContentKafkaService(
 }
 
 /**
- * 카프카로 전송할 메시지 데이터 클래스
+ * SourceContent를 ContentProcessedMessage로 변환하는 확장 함수
  */
-data class ContentProcessedMessage(
-    val id: String,
-    val type: SourceType,
-    val processedAt: LocalDateTime,
-    val content: Map<String, Any?>
-) {
-    companion object {
-        fun from(sourceContent: SourceContent): ContentProcessedMessage {
-            return ContentProcessedMessage(
-                id = requireNotNull(sourceContent.id) { "SourceContent must have id after saving" },
-                type = sourceContent.type,
-                processedAt = sourceContent.processedAt,
-                content = sourceContent.content
-            )
-        }
-    }
+fun SourceContent.toContentProcessedMessage(): ContentProcessedMessage {
+    return ContentProcessedMessage(
+        id = requireNotNull(this.id) { "SourceContent must have id after saving" },
+        type = this.type,
+        processedAt = this.processedAt,
+        content = this.content
+    )
 }
