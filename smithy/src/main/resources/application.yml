@@ -1,13 +1,58 @@
+server:
+  port: 8082
+
 spring:
   application:
     name: smithy
   profiles:
     active: dev
-
-server:
-  port: 8081
+  output:
+    ansi:
+      enabled: always
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: admin
+      password: admin123
+      authentication-database: admin
+      database: smithy_db
+      auto-index-creation: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: smithy-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        # 수동 커밋 모드 사용
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        # 멱등성 프로듀서 설정
+        enable.idempotence: true
+        acks: all
+        retries: 3
+        compression.type: lz4
+    listener:
+      ack-mode: manual
 
 # Smithy 모듈 설정
 smithy:
   description: "데이터 정제 시스템 - 대장간"
   version: 1.0.0
+  tika:
+    # Tika 파서 설정
+    max-string-length: 10000000  # 10MB
+    timeout: 60000  # 60초
+
+# 로깅 설정
+logging:
+  level:
+    com.sandro.realtime.smithy: DEBUG
+    org.apache.tika: INFO
+    org.springframework.kafka: INFO
