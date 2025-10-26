@@ -37,7 +37,8 @@ class ContentKafkaListener(
     @KafkaListener(
         topics = [KafkaTopic.WIKI_CONTENT_PROCESSED],
         groupId = "\${spring.kafka.consumer.group-id}",
-        containerFactory = "kafkaListenerContainerFactory"
+        containerFactory = "kafkaListenerContainerFactory",
+        concurrency = "3"
     )
     fun handleWikiContentProcessed(
         messageJson: String,
@@ -99,7 +100,8 @@ class ContentKafkaListener(
     @KafkaListener(
         topics = [KafkaTopic.NEWS_CONTENT_PROCESSED],
         groupId = "\${spring.kafka.consumer.group-id}",
-        containerFactory = "kafkaListenerContainerFactory"
+        containerFactory = "kafkaListenerContainerFactory",
+        concurrency = "3"
     )
     fun handleNewsContentProcessed(
         messageJson: String,
