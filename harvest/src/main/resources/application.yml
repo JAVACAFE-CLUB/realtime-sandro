@@ -32,7 +32,7 @@ spring:
       host: localhost
       port: 27017
       username: admin
-      password: admin123
+      password: admin1234
       authentication-database: admin
       database: harvest_db
       auto-index-creation: true
@@ -64,7 +64,8 @@ batch:
     size: 1000
   wiki:
     file:
-      path: file:${user.home}/bigdata/kowiki-20250820-pages-articles-multistream1.xml-p1p82407.bz2
+      directory: ${user.home}/bigdata
+      pattern: kowiki-*-pages-articles-multistream1.xml-*.bz2
 
 # 로깅 설정
 logging:

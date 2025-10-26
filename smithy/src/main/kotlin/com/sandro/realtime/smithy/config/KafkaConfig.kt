@@ -11,7 +11,6 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.*
 import org.springframework.kafka.listener.ContainerProperties
-import org.springframework.kafka.support.serializer.JsonDeserializer
 import org.springframework.kafka.support.serializer.JsonSerializer
 
 /**
@@ -31,32 +30,31 @@ class KafkaConfig {
 
     /**
      * Kafka Consumer Factory
+     *
+     * String으로 역직렬화하여 토픽별로 다른 메시지 타입을 처리할 수 있도록 구성
      */
     @Bean
-    fun consumerFactory(): ConsumerFactory<String, Any> {
+    fun consumerFactory(): ConsumerFactory<String, String> {
         val props = mapOf(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
             ConsumerConfig.GROUP_ID_CONFIG to groupId,
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
-            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to JsonDeserializer::class.java,
+            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to false,
-            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
-            JsonDeserializer.TRUSTED_PACKAGES to "*"
+            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest"
         )
 
-        return DefaultKafkaConsumerFactory(
-            props,
-            StringDeserializer(),
-            JsonDeserializer<Any>(Any::class.java, false)
-        )
+        return DefaultKafkaConsumerFactory(props)
     }
 
     /**
      * Kafka Listener Container Factory
+     *
+     * String 값을 수신하여 리스너에서 수동으로 역직렬화 처리
      */
     @Bean
-    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
-        val factory = ConcurrentKafkaListenerContainerFactory<String, Any>()
+    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
         factory.consumerFactory = consumerFactory()
         factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
         return factory

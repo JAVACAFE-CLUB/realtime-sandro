@@ -19,6 +19,7 @@ dependencies {
     // Testing
     testImplementation("org.springframework.kafka:spring-kafka-test")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0")
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
 }
 
 tasks.bootJar {

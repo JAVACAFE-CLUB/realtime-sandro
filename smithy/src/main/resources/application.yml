@@ -14,7 +14,7 @@ spring:
       host: localhost
       port: 27017
       username: admin
-      password: admin123
+      password: admin1234
       authentication-database: admin
       database: smithy_db
       auto-index-creation: true
