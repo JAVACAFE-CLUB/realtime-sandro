@@ -215,6 +215,64 @@ services:
       timeout: 10s
       retries: 3
 
+  prometheus:
+    image: prom/prometheus:latest
+    platform: linux/arm64
+    container_name: realtime-prometheus
+    ports:
+      - "9091:9090"
+    environment:
+      TZ: Asia/Seoul
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - realtime-network
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:latest
+    platform: linux/arm64
+    container_name: realtime-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      TZ: Asia/Seoul
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - realtime-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:latest
+    platform: linux/arm64
+    container_name: realtime-kafka-exporter
+    ports:
+      - "9308:9308"
+    command:
+      - '--kafka.server=kafka-1:29092'
+      - '--kafka.server=kafka-2:29092'
+      - '--kafka.server=kafka-3:29092'
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - realtime-network
+    restart: unless-stopped
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+
 volumes:
   mysql_data:
     driver: local
@@ -229,6 +287,10 @@ volumes:
   elasticsearch_data:
     driver: local
   mongodb_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local
 
 networks:

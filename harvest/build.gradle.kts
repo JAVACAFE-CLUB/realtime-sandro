@@ -27,6 +27,10 @@ dependencies {
     // HTML parsing
     implementation("org.jsoup:jsoup:1.18.1")
 
+    // Actuator & Metrics
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
     // Database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("com.mysql:mysql-connector-j")
