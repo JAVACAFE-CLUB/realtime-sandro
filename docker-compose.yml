@@ -8,7 +8,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: realtime_db
       MYSQL_USER: realtime
       MYSQL_PASSWORD: realtime1234
@@ -46,35 +46,86 @@ services:
       timeout: 20s
       retries: 3
 
-  kafka:
+  kafka-1:
     image: confluentinc/cp-kafka:latest
     platform: linux/arm64
-    container_name: realtime-kafka
+    container_name: realtime-kafka-1
     ports:
       - "9092:9092"
-      - "9093:9093"
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:29093,2@kafka-2:29093,3@kafka-3:29093
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,EXTERNAL://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:29092,EXTERNAL://localhost:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
       CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
       TZ: Asia/Seoul
     volumes:
-      - kafka_data:/var/lib/kafka/data
+      - kafka_data_1:/var/lib/kafka/data
     networks:
       - realtime-network
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+
+  kafka-2:
+    image: confluentinc/cp-kafka:latest
+    platform: linux/arm64
+    container_name: realtime-kafka-2
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:29093,2@kafka-2:29093,3@kafka-3:29093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,EXTERNAL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:29092,EXTERNAL://localhost:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
+      TZ: Asia/Seoul
+    volumes:
+      - kafka_data_2:/var/lib/kafka/data
+    networks:
+      - realtime-network
+    restart: unless-stopped
+
+  kafka-3:
+    image: confluentinc/cp-kafka:latest
+    platform: linux/arm64
+    container_name: realtime-kafka-3
+    ports:
+      - "9094:9094"
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:29093,2@kafka-2:29093,3@kafka-3:29093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,EXTERNAL://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:29092,EXTERNAL://localhost:9094
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
+      TZ: Asia/Seoul
+    volumes:
+      - kafka_data_3:/var/lib/kafka/data
+    networks:
+      - realtime-network
+    restart: unless-stopped
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -84,13 +135,15 @@ services:
       - "8090:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: realtime-cluster
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:29092,kafka-2:29092,kafka-3:29092
       TZ: Asia/Seoul
     networks:
       - realtime-network
     restart: unless-stopped
     depends_on:
-      - kafka
+      - kafka-1
+      - kafka-2
+      - kafka-3
     healthcheck:
       test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080" ]
       interval: 30s
@@ -141,14 +194,41 @@ services:
       timeout: 10s
       retries: 3
 
+  mongodb:
+    image: mongo:8.0
+    platform: linux/arm64
+    container_name: realtime-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin1234
+      TZ: Asia/Seoul
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - realtime-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   mysql_data:
     driver: local
   minio_data:
     driver: local
-  kafka_data:
+  kafka_data_1:
+    driver: local
+  kafka_data_2:
+    driver: local
+  kafka_data_3:
     driver: local
   elasticsearch_data:
+    driver: local
+  mongodb_data:
     driver: local
 
 networks:
