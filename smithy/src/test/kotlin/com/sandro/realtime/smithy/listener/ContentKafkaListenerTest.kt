@@ -1,11 +1,12 @@
 package com.sandro.realtime.smithy.listener
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.ninjasquad.springmockk.MockkBean
 import com.sandro.realtime.common.KafkaTopic
 import com.sandro.realtime.common.domain.SourceType
 import com.sandro.realtime.common.message.ContentProcessedMessage
-import com.sandro.realtime.smithy.kafka.TextKafkaService
-import com.ninjasquad.springmockk.MockkBean
+import com.sandro.realtime.smithy.document.repository.ExtractedContentRepository
+import com.sandro.realtime.smithy.service.ContentProcessingService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit
  */
 @SpringBootTest(
     properties = [
-        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration"
+        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration,de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration"
     ]
 )
 @TestPropertySource(properties = ["spring.kafka.bootstrap-servers=\${spring.embedded.kafka.brokers}"])
@@ -41,7 +42,10 @@ class ContentKafkaListenerTest {
     private lateinit var objectMapper: ObjectMapper
 
     @MockkBean
-    private lateinit var textKafkaService: TextKafkaService
+    private lateinit var contentProcessingService: ContentProcessingService
+
+    @MockkBean
+    private lateinit var extractedContentRepository: ExtractedContentRepository
 
     @Test
     fun `Wiki 콘텐츠 메시지를 발송한다`() {
