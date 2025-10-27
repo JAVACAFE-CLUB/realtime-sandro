@@ -6,8 +6,9 @@ import com.sandro.realtime.common.message.TextExtractedMessage
 import com.sandro.realtime.smithy.document.ExtractedContent
 import com.sandro.realtime.smithy.document.repository.ExtractedContentRepository
 import com.sandro.realtime.smithy.document.service.TikaDocumentParser
-import com.sandro.realtime.smithy.kafka.TextKafkaService
+import com.sandro.realtime.smithy.event.TextExtractedEvent
 import org.slf4j.LoggerFactory
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import java.io.ByteArrayInputStream
 import java.time.LocalDateTime
@@ -21,7 +22,7 @@ import java.time.LocalDateTime
 @Service
 class ContentProcessingService(
     private val tikaDocumentParser: TikaDocumentParser,
-    private val textKafkaService: TextKafkaService,
+    private val eventPublisher: ApplicationEventPublisher,
     private val extractedContentRepository: ExtractedContentRepository
 ) {
 
@@ -142,15 +143,14 @@ class ContentProcessingService(
         val savedContent = extractedContentRepository.save(extractedContent)
         logger.info("MongoDB 저장 완료: id=${savedContent.id}, sourceId=${sourceId}")
 
-        // 텍스트 추출 완료 메시지 발송
+        // 텍스트 추출 완료 이벤트 발행
         val textExtractedMessage = TextExtractedMessage(
             sourceId = sourceId,
             sourceType = sourceType,
             extractedText = extractedText,
             extractedAt = extractedAt
         )
-        // FIXME: ApplicationEvent로 변경
-        textKafkaService.sendTextExtracted(textExtractedMessage)
-        logger.info("Kafka 메시지 발송 완료: sourceId=${sourceId}")
+        eventPublisher.publishEvent(TextExtractedEvent(this, textExtractedMessage))
+        logger.info("텍스트 추출 이벤트 발행 완료: sourceId=$sourceId")
     }
 }
