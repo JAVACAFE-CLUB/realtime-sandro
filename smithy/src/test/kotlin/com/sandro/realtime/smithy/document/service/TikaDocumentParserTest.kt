@@ -1,11 +1,14 @@
 package com.sandro.realtime.smithy.document.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 
 import java.io.ByteArrayInputStream
+import java.io.File
 
 /**
  * TikaDocumentParser 테스트
@@ -149,6 +152,65 @@ class TikaDocumentParserTest : DescribeSpec({
                 result.success shouldBe true
                 result.extractedText shouldNotBe ""
                 result.detectedLanguage shouldNotBe null
+            }
+        }
+    }
+
+    describe("실제 메시지 데이터 파싱") {
+        val objectMapper = ObjectMapper().findAndRegisterModules()
+
+        context("News 메시지를 파싱할 때") {
+            it("HTML 콘텐츠에서 순수 텍스트를 추출해야 한다") {
+                // given
+                val newsMessageFile = File("src/test/resources/news-message.json")
+                val jsonNode = objectMapper.readTree(newsMessageFile)
+                val htmlContent = jsonNode.get("content").get("content").asText()
+
+                val inputStream = ByteArrayInputStream(htmlContent.toByteArray(Charsets.UTF_8))
+
+                // when
+                val result = parser.parseDocument(inputStream, "text/html")
+
+                // then
+                result.success shouldBe true
+                println("\n=== News 추출 결과 ===")
+                println("원본 HTML 길이: ${htmlContent.length}자")
+                println("추출된 텍스트 길이: ${result.extractedText.length}자")
+                println("감지된 언어: ${result.detectedLanguage}")
+                println("콘텐츠 타입: ${result.contentType}")
+                println("\n추출된 텍스트:\n${result.extractedText}")
+                println("======================\n")
+
+                // HTML 태그가 제거되고 텍스트만 추출되었는지 검증
+                result.extractedText shouldContain "코스피"
+                result.extractedText shouldContain "4,000"
+            }
+        }
+
+        context("Wiki 메시지를 파싱할 때") {
+            it("위키마크업에서 텍스트를 추출해야 한다") {
+                // given
+                val wikiMessageFile = File("src/test/resources/wiki-message.json")
+                val jsonNode = objectMapper.readTree(wikiMessageFile)
+                val wikiText = jsonNode.get("content").get("revision").get("text").asText()
+
+                val inputStream = ByteArrayInputStream(wikiText.toByteArray(Charsets.UTF_8))
+
+                // when
+                val result = parser.parseDocument(inputStream, "text/plain")
+
+                // then
+                result.success shouldBe true
+                println("\n=== Wiki 추출 결과 ===")
+                println("원본 위키마크업 길이: ${wikiText.length}자")
+                println("추출된 텍스트 길이: ${result.extractedText.length}자")
+                println("감지된 언어: ${result.detectedLanguage}")
+                println("콘텐츠 타입: ${result.contentType}")
+                println("\n추출된 텍스트:\n${result.extractedText}")
+                println("======================\n")
+
+                // 위키마크업이 제거되고 텍스트만 추출되었는지 검증
+                result.extractedText shouldContain "지미 카터"
             }
         }
     }
