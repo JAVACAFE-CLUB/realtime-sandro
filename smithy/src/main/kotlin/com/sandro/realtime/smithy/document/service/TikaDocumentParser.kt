@@ -1,5 +1,7 @@
 package com.sandro.realtime.smithy.document.service
 
+import info.bliki.wiki.filter.PlainTextConverter
+import info.bliki.wiki.model.WikiModel
 import org.apache.tika.Tika
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.parser.AutoDetectParser
@@ -51,7 +53,13 @@ class TikaDocumentParser {
             parser.parse(inputStream, handler, metadata, context)
 
             // 추출된 텍스트
-            val extractedText = handler.toString().trim()
+            var extractedText = handler.toString().trim()
+
+            // 위키마크업 감지 및 파싱
+            if (isWikiMarkup(extractedText)) {
+                logger.info("위키마크업 감지됨, Sweble Wikitext로 파싱 시작")
+                extractedText = parseWikiMarkup(extractedText)
+            }
 
             // 컨텐츠 타입 확인
             val detectedContentType = metadata.get(Metadata.CONTENT_TYPE) ?: "unknown"
@@ -129,6 +137,47 @@ class TikaDocumentParser {
         } catch (e: Exception) {
             logger.warn("언어 감지 실패", e)
             null
+        }
+    }
+
+    /**
+     * 위키마크업 여부 감지
+     *
+     * @param text 검사할 텍스트
+     * @return 위키마크업이면 true
+     */
+    private fun isWikiMarkup(text: String): Boolean {
+        // 위키마크업의 일반적인 패턴들
+        val hasTemplate = text.contains("{{") && text.contains("}}")
+        val hasLink = text.contains("[[") && text.contains("]]")
+        val hasHeading = text.contains("===") || text.contains("==")
+        val hasList = Regex("""^[*#]""", RegexOption.MULTILINE).containsMatchIn(text)
+        val hasBold = text.contains("'''")
+        val hasItalic = text.contains("''")
+
+        return hasTemplate || hasLink || hasHeading || hasList || hasBold || hasItalic
+    }
+
+    /**
+     * 위키마크업 파싱
+     *
+     * @param wikiText 위키마크업 텍스트
+     * @return 플레인 텍스트
+     */
+    private fun parseWikiMarkup(wikiText: String): String {
+        return try {
+            // Bliki WikiModel 생성
+            val wikiModel = WikiModel("", "")
+
+            // 위키마크업을 플레인 텍스트로 변환
+            val plainText = wikiModel.render(PlainTextConverter(), wikiText)
+
+            logger.info("위키마크업 파싱 완료 - 원본: ${wikiText.length}자, 파싱: ${plainText.length}자")
+            plainText
+
+        } catch (e: Exception) {
+            logger.error("위키마크업 파싱 실패, 원본 텍스트 반환", e)
+            wikiText // 파싱 실패시 원본 반환
         }
     }
 }
