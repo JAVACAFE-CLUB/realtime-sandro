@@ -22,16 +22,16 @@ class LoadTestController(
      * POST /api/loadtest/start?throughput=10000&duration=60
      *
      * @param throughput 초당 목표 메시지 수 (기본값: 10000)
-     * @param duration 테스트 지속 시간(초) (기본값: 60)
+     * @param duration 테스트 지속 시간(초) (기본값: 5)
      * @return 시작 결과
      */
     @PostMapping("/start")
     fun startLoadTest(
         @RequestParam(defaultValue = "10000") throughput: Int,
-        @RequestParam(defaultValue = "60") duration: Int
+        @RequestParam(defaultValue = "5") duration: Int
     ): ResponseEntity<Map<String, Any>> {
         // 유효성 검사
-        if (throughput <= 0 || throughput > 100000) {
+        if (throughput !in 1..100000) {
             return ResponseEntity.badRequest().body(
                 mapOf(
                     "success" to false,
@@ -40,7 +40,7 @@ class LoadTestController(
             )
         }
 
-        if (duration <= 0 || duration > 3600) {
+        if (duration !in 1..3600) {
             return ResponseEntity.badRequest().body(
                 mapOf(
                     "success" to false,
