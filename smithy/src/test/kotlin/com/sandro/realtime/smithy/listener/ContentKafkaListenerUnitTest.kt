@@ -67,7 +67,7 @@ class ContentKafkaListenerUnitTest : DescribeSpec({
 
                 // when
                 val messageJson = objectMapper.writeValueAsString(message)
-                contentKafkaListener.handleWikiContentProcessed(messageJson, acknowledgment)
+                contentKafkaListener.handleWikiContentProcessed(listOf(messageJson), acknowledgment)
 
                 // then
                 verify(exactly = 1) {
@@ -102,7 +102,7 @@ class ContentKafkaListenerUnitTest : DescribeSpec({
 
                 // when
                 val messageJson = objectMapper.writeValueAsString(message)
-                contentKafkaListener.handleWikiContentProcessed(messageJson, acknowledgment)
+                contentKafkaListener.handleWikiContentProcessed(listOf(messageJson), acknowledgment)
 
                 // then
                 verify(exactly = 1) {
@@ -115,7 +115,7 @@ class ContentKafkaListenerUnitTest : DescribeSpec({
         }
 
         context("처리 중 예외가 발생했을 때") {
-            it("예외를 처리하고 커밋하지 않아야 한다") {
+            it("예외를 로깅하고 배치 전체를 커밋해야 한다") {
                 // given
                 val message = ContentProcessedMessage(
                     id = "wiki-789",
@@ -137,13 +137,13 @@ class ContentKafkaListenerUnitTest : DescribeSpec({
 
                 // when
                 val messageJson = objectMapper.writeValueAsString(message)
-                contentKafkaListener.handleWikiContentProcessed(messageJson, acknowledgment)
+                contentKafkaListener.handleWikiContentProcessed(listOf(messageJson), acknowledgment)
 
                 // then
                 verify(exactly = 1) {
                     contentProcessingService.processWikiContent(any())
                 }
-                verify(exactly = 0) {
+                verify(exactly = 1) {
                     acknowledgment.acknowledge()
                 }
             }
@@ -180,7 +180,7 @@ class ContentKafkaListenerUnitTest : DescribeSpec({
 
                 // when
                 val messageJson = objectMapper.writeValueAsString(message)
-                contentKafkaListener.handleNewsContentProcessed(messageJson, acknowledgment)
+                contentKafkaListener.handleNewsContentProcessed(listOf(messageJson), acknowledgment)
 
                 // then
                 verify(exactly = 1) {
@@ -212,7 +212,7 @@ class ContentKafkaListenerUnitTest : DescribeSpec({
 
                 // when
                 val messageJson = objectMapper.writeValueAsString(message)
-                contentKafkaListener.handleNewsContentProcessed(messageJson, acknowledgment)
+                contentKafkaListener.handleNewsContentProcessed(listOf(messageJson), acknowledgment)
 
                 // then
                 verify(exactly = 1) {
@@ -225,7 +225,7 @@ class ContentKafkaListenerUnitTest : DescribeSpec({
         }
 
         context("처리 중 예외가 발생했을 때") {
-            it("예외를 처리하고 커밋하지 않아야 한다") {
+            it("예외를 로깅하고 배치 전체를 커밋해야 한다") {
                 // given
                 val message = ContentProcessedMessage(
                     id = "news-789",
@@ -244,13 +244,13 @@ class ContentKafkaListenerUnitTest : DescribeSpec({
 
                 // when
                 val messageJson = objectMapper.writeValueAsString(message)
-                contentKafkaListener.handleNewsContentProcessed(messageJson, acknowledgment)
+                contentKafkaListener.handleNewsContentProcessed(listOf(messageJson), acknowledgment)
 
                 // then
                 verify(exactly = 1) {
                     contentProcessingService.processNewsContent(any())
                 }
-                verify(exactly = 0) {
+                verify(exactly = 1) {
                     acknowledgment.acknowledge()
                 }
             }

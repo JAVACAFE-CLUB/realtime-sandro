@@ -22,9 +22,9 @@ class ContentKafkaListener(
     private val logger = LoggerFactory.getLogger(ContentKafkaListener::class.java)
 
     /**
-     * Wikipedia 콘텐츠 처리 완료 메시지 수신
+     * Wikipedia 콘텐츠 처리 완료 메시지 배치 수신
      *
-     * @param messageJson harvest 모듈에서 발행한 Wikipedia 콘텐츠 메시지 (JSON String)
+     * @param messageJsonList harvest 모듈에서 발행한 Wikipedia 콘텐츠 메시지 목록 (JSON String List)
      * @param acknowledgment 수동 커밋을 위한 Acknowledgment
      */
     @KafkaListener(
@@ -34,36 +34,47 @@ class ContentKafkaListener(
         concurrency = "3"
     )
     fun handleWikiContentProcessed(
-        messageJson: String,
+        messageJsonList: List<String>,
         acknowledgment: Acknowledgment
     ) {
-        try {
-            // TODO: 메시지 별로 특화된 모델 사용하기
-            // JSON String을 ContentProcessedMessage로 역직렬화
-            val message: ContentProcessedMessage = objectMapper.readValue(messageJson)
+        logger.info("Wiki 콘텐츠 배치 수신: 배치 크기=${messageJsonList.size}")
 
-            logger.info("Wiki 콘텐츠 메시지 수신: id=${message.id}, type=${message.type}")
+        var successCount = 0
+        var failCount = 0
 
-            // 서비스에 처리 위임
-            contentProcessingService.processWikiContent(message)
+        messageJsonList.forEach { messageJson ->
+            try {
+                // TODO: 메시지 별로 특화된 모델 사용하기
+                // JSON String을 ContentProcessedMessage로 역직렬화
+                val message: ContentProcessedMessage = objectMapper.readValue(messageJson)
 
-            // 수동 커밋
-            acknowledgment.acknowledge()
-            logger.debug("Wiki 콘텐츠 처리 완료 및 커밋: id=${message.id}")
-        } catch (e: IllegalArgumentException) {
-            logger.error("Wiki 콘텐츠 메시지 형식 오류: error=${e.message}", e)
-            // 메시지 형식 오류는 재처리해도 성공할 수 없으므로 커밋하여 skip
-            acknowledgment.acknowledge()
-        } catch (e: Exception) {
-            logger.error("Wiki 콘텐츠 처리 중 예외 발생: error=${e.message}", e)
-            // 에러 발생 시 커밋하지 않아 재처리됨
+                logger.debug("Wiki 콘텐츠 메시지 수신: id=${message.id}, type=${message.type}")
+
+                // 서비스에 처리 위임
+                contentProcessingService.processWikiContent(message)
+
+                successCount++
+                logger.debug("Wiki 콘텐츠 처리 완료: id=${message.id}")
+            } catch (e: IllegalArgumentException) {
+                failCount++
+                logger.error("Wiki 콘텐츠 메시지 형식 오류: error=${e.message}", e)
+                // TODO: DLQ(Dead Letter Queue)로 전송하여 별도 처리 필요
+            } catch (e: Exception) {
+                failCount++
+                logger.error("Wiki 콘텐츠 처리 중 예외 발생: error=${e.message}", e)
+                // TODO: 재처리 정책 수립 필요 (현재는 배치 전체 재처리)
+            }
         }
+
+        // 배치 단위 커밋
+        acknowledgment.acknowledge()
+        logger.info("Wiki 콘텐츠 배치 처리 완료: 성공=$successCount, 실패=$failCount, 전체=${messageJsonList.size}")
     }
 
     /**
-     * News 콘텐츠 처리 완료 메시지 수신
+     * News 콘텐츠 처리 완료 메시지 배치 수신
      *
-     * @param messageJson harvest 모듈에서 발행한 News 콘텐츠 메시지 (JSON String)
+     * @param messageJsonList harvest 모듈에서 발행한 News 콘텐츠 메시지 목록 (JSON String List)
      * @param acknowledgment 수동 커밋을 위한 Acknowledgment
      */
     @KafkaListener(
@@ -73,28 +84,39 @@ class ContentKafkaListener(
         concurrency = "3"
     )
     fun handleNewsContentProcessed(
-        messageJson: String,
+        messageJsonList: List<String>,
         acknowledgment: Acknowledgment
     ) {
-        try {
-            // JSON String을 ContentProcessedMessage로 역직렬화
-            val message: ContentProcessedMessage = objectMapper.readValue(messageJson)
+        logger.info("News 콘텐츠 배치 수신: 배치 크기=${messageJsonList.size}")
 
-            logger.info("News 콘텐츠 메시지 수신: id=${message.id}, type=${message.type}")
+        var successCount = 0
+        var failCount = 0
 
-            // 서비스에 처리 위임
-            contentProcessingService.processNewsContent(message)
+        messageJsonList.forEach { messageJson ->
+            try {
+                // JSON String을 ContentProcessedMessage로 역직렬화
+                val message: ContentProcessedMessage = objectMapper.readValue(messageJson)
 
-            // 수동 커밋
-            acknowledgment.acknowledge()
-            logger.debug("News 콘텐츠 처리 완료 및 커밋: id=${message.id}")
-        } catch (e: IllegalArgumentException) {
-            logger.error("News 콘텐츠 메시지 형식 오류: error=${e.message}", e)
-            // 메시지 형식 오류는 재처리해도 성공할 수 없으므로 커밋하여 skip
-            acknowledgment.acknowledge()
-        } catch (e: Exception) {
-            logger.error("News 콘텐츠 처리 중 예외 발생: error=${e.message}", e)
-            // 에러 발생 시 커밋하지 않아 재처리됨
+                logger.debug("News 콘텐츠 메시지 수신: id=${message.id}, type=${message.type}")
+
+                // 서비스에 처리 위임
+                contentProcessingService.processNewsContent(message)
+
+                successCount++
+                logger.debug("News 콘텐츠 처리 완료: id=${message.id}")
+            } catch (e: IllegalArgumentException) {
+                failCount++
+                logger.error("News 콘텐츠 메시지 형식 오류: error=${e.message}", e)
+                // TODO: DLQ(Dead Letter Queue)로 전송하여 별도 처리 필요
+            } catch (e: Exception) {
+                failCount++
+                logger.error("News 콘텐츠 처리 중 예외 발생: error=${e.message}", e)
+                // TODO: 재처리 정책 수립 필요 (현재는 배치 전체 재처리)
+            }
         }
+
+        // 배치 단위 커밋
+        acknowledgment.acknowledge()
+        logger.info("News 콘텐츠 배치 처리 완료: 성공=$successCount, 실패=$failCount, 전체=${messageJsonList.size}")
     }
 }

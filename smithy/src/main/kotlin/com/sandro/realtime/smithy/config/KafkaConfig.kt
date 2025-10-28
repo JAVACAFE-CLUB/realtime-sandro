@@ -50,13 +50,14 @@ class KafkaConfig {
     /**
      * Kafka Listener Container Factory
      *
-     * String 값을 수신하여 리스너에서 수동으로 역직렬화 처리
+     * String 값을 배치로 수신하여 리스너에서 수동으로 역직렬화 처리
      */
     @Bean
     fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
         factory.consumerFactory = consumerFactory()
         factory.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
+        factory.isBatchListener = true  // 배치 리스너 모드 활성화
         return factory
     }
 
