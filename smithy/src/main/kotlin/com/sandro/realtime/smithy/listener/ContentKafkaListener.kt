@@ -32,15 +32,15 @@ class ContentKafkaListener(
         topics = [KafkaTopic.WIKI_CONTENT_PROCESSED],
         groupId = "\${spring.kafka.consumer.group-id}",
         containerFactory = "kafkaListenerContainerFactory",
-        concurrency = "3"
+//        concurrency = "3"
     )
-    fun handleWikiContentProcessed(
+    suspend fun handleWikiContentProcessed(
         messageJsonList: List<String>,
         acknowledgment: Acknowledgment
     ) {
         logger.info("Wiki 콘텐츠 배치 수신: 배치 크기=${messageJsonList.size}")
 
-        val (successCount, failCount) = runBlocking {
+        coroutineScope {
             val results = messageJsonList.map { messageJson ->
                 async(Dispatchers.IO) {
                     try {
@@ -69,12 +69,11 @@ class ContentKafkaListener(
 
             val successCount = results.count { it }
             val failCount = results.count { !it }
-            successCount to failCount
-        }
 
-        // 배치 단위 커밋
-        acknowledgment.acknowledge()
-        logger.info("Wiki 콘텐츠 배치 처리 완료: 성공=$successCount, 실패=$failCount, 전체=${messageJsonList.size}")
+            // 배치 단위 커밋
+            acknowledgment.acknowledge()
+            logger.info("Wiki 콘텐츠 배치 처리 완료: 성공=$successCount, 실패=$failCount, 전체=${messageJsonList.size}")
+        }
     }
 
     /**
@@ -89,13 +88,13 @@ class ContentKafkaListener(
         containerFactory = "kafkaListenerContainerFactory",
         concurrency = "3"
     )
-    fun handleNewsContentProcessed(
+    suspend fun handleNewsContentProcessed(
         messageJsonList: List<String>,
         acknowledgment: Acknowledgment
     ) {
         logger.info("News 콘텐츠 배치 수신: 배치 크기=${messageJsonList.size}")
 
-        val (successCount, failCount) = runBlocking {
+        coroutineScope {
             val results = messageJsonList.map { messageJson ->
                 async(Dispatchers.IO) {
                     try {
@@ -123,11 +122,10 @@ class ContentKafkaListener(
 
             val successCount = results.count { it }
             val failCount = results.count { !it }
-            successCount to failCount
-        }
 
-        // 배치 단위 커밋
-        acknowledgment.acknowledge()
-        logger.info("News 콘텐츠 배치 처리 완료: 성공=$successCount, 실패=$failCount, 전체=${messageJsonList.size}")
+            // 배치 단위 커밋
+            acknowledgment.acknowledge()
+            logger.info("News 콘텐츠 배치 처리 완료: 성공=$successCount, 실패=$failCount, 전체=${messageJsonList.size}")
+        }
     }
 }
