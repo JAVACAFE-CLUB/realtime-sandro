@@ -17,8 +17,6 @@ management:
 spring:
   application:
     name: smithy
-  profiles:
-    active: dev
   output:
     ansi:
       enabled: always
