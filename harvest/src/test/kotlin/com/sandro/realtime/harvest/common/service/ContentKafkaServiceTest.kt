@@ -1,8 +1,9 @@
 package com.sandro.realtime.harvest.common.service
 
 import com.sandro.realtime.common.KafkaTopic
+import com.sandro.realtime.common.domain.SourceType
+import com.sandro.realtime.common.message.ContentProcessedMessage
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.wiki.event.WikiPagesBatchProcessedEvent
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.common.serialization.StringDeserializer

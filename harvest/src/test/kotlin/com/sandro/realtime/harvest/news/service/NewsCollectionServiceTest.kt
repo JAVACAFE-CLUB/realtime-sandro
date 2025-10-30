@@ -4,8 +4,8 @@ import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeKotlinBuilder
 import com.navercorp.fixturemonkey.kotlin.giveMeOne
+import com.sandro.realtime.common.domain.SourceType
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.common.repository.SourceContentRepository
 import com.sandro.realtime.harvest.news.domain.NewsArticle
 import io.kotest.core.spec.style.DescribeSpec
@@ -66,7 +66,12 @@ class NewsCollectionServiceTest : DescribeSpec({
 
                     coEvery { newsCrawlingService.getNewsUrls() } returns urls
                     coEvery { newsCrawlingService.getArticleDetails(any()) } returns newsArticle
-                    every { sourceContentRepository.findByTypeAndContentArticleId(any(), any()) } returns java.util.Optional.empty()
+                    every {
+                        sourceContentRepository.findByTypeAndContentArticleId(
+                            any(),
+                            any()
+                        )
+                    } returns java.util.Optional.empty()
                     every { sourceContentRepository.save(any()) } returns sourceContent
                     every { eventPublisher.publishEvent(any()) } just Runs
 
@@ -99,7 +104,12 @@ class NewsCollectionServiceTest : DescribeSpec({
                     coEvery { newsCrawlingService.getNewsUrls() } returns urls
                     coEvery { newsCrawlingService.getArticleDetails(urls[0]) } throws RuntimeException("첫 번째 뉴스 실패")
                     coEvery { newsCrawlingService.getArticleDetails(urls[1]) } returns newsArticle
-                    every { sourceContentRepository.findByTypeAndContentArticleId(any(), any()) } returns java.util.Optional.empty()
+                    every {
+                        sourceContentRepository.findByTypeAndContentArticleId(
+                            any(),
+                            any()
+                        )
+                    } returns java.util.Optional.empty()
                     every { sourceContentRepository.save(any()) } returns sourceContent
                     every { eventPublisher.publishEvent(any()) } just Runs
 

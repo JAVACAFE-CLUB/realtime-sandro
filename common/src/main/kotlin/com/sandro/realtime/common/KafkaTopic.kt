@@ -63,6 +63,12 @@ object KafkaTopic {
      */
     const val AI_PROCESSING_REQUESTED = "smithy.ai.requested.v1"
 
+    /**
+     * 텍스트 추출 완료 이벤트
+     * Producer: smithy / Consumer: codex
+     */
+    const val TEXT_EXTRACTED = "smithy.text.extracted.v1"
+
     // ========== System Topics ==========
     /**
      * 시스템 에러 이벤트 (모니터링용)

@@ -3,8 +3,8 @@ package com.sandro.realtime.harvest.news.service
 import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeKotlinBuilder
+import com.sandro.realtime.common.domain.SourceType
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.common.repository.SourceContentRepository
 import com.sandro.realtime.harvest.news.domain.NewsArticle
 import io.kotest.matchers.nulls.shouldBeNull

@@ -1,7 +1,7 @@
 package com.sandro.realtime.harvest.wiki.repository
 
+import com.sandro.realtime.common.domain.SourceType
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.common.util.SourceContentMapper
 import com.sandro.realtime.harvest.wiki.domain.WikiPage
 import org.slf4j.LoggerFactory
@@ -38,11 +38,9 @@ class WikiPageRepository(
         if (pagesToUpdate.isEmpty()) return emptyList()
 
         val bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, SourceContent::class.java)
-        val sourceContents = mutableListOf<SourceContent>()
 
         pagesToUpdate.forEach { wikiPage ->
             val sourceContent = SourceContentMapper.from(wikiPage)
-            sourceContents.add(sourceContent)
 
             val upsertQuery = Query.query(
                 Criteria.where("type").`is`(SourceType.WIKIPEDIA)
@@ -60,7 +58,15 @@ class WikiPageRepository(
 
         return try {
             bulkOps.execute()
-            pagesToUpdate.map { SourceContentMapper.from(it) }
+
+            // Bulk upsert 후 저장된 SourceContent를 조회하여 id를 포함한 객체 반환
+            val wikiPageIds = pagesToUpdate.map { it.id }
+            val query = Query.query(
+                Criteria.where("type").`is`(SourceType.WIKIPEDIA)
+                    .and("content.id").`in`(wikiPageIds)
+            )
+
+            mongoTemplate.find(query, SourceContent::class.java)
         } catch (e: Exception) {
             logger.error("Failed to bulk upsert wiki pages: count=${wikiPages.size}", e)
             throw e

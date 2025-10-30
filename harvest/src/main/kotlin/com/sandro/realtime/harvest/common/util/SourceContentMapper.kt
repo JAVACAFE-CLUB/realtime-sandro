@@ -1,10 +1,10 @@
 package com.sandro.realtime.harvest.common.util
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.sandro.realtime.common.domain.SourceType
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.news.domain.NewsArticle
 import com.sandro.realtime.harvest.wiki.domain.WikiPage
 
@@ -13,7 +13,7 @@ class SourceContentMapper {
         private val objectMapper = ObjectMapper().apply {
             registerModule(JavaTimeModule())
         }
-        
+
         private val mapTypeRef = object : TypeReference<Map<String, Any?>>() {}
 
         /**

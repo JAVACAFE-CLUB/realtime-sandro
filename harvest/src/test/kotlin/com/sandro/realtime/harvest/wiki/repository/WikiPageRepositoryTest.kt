@@ -3,14 +3,15 @@ package com.sandro.realtime.harvest.wiki.repository
 import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeKotlinBuilder
+import com.sandro.realtime.common.domain.SourceType
 import com.sandro.realtime.harvest.common.domain.SourceContent
-import com.sandro.realtime.harvest.common.domain.SourceType
 import com.sandro.realtime.harvest.common.repository.SourceContentRepository
 import com.sandro.realtime.harvest.common.util.SourceContentMapper
 import com.sandro.realtime.harvest.wiki.domain.WikiPage
 import com.sandro.realtime.harvest.wiki.domain.WikiRevision
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -65,6 +66,9 @@ class WikiPageRepositoryTest {
         // then
         result.shouldNotBeEmpty()
         result.size shouldBe 1
+
+        // ✅ 중요: bulk upsert 후 반환된 SourceContent에 id가 있어야 함 (Kafka 메시지 발송을 위해)
+        result[0].id shouldNotBe null
 
         // MongoDB에 실제 저장 확인
         val savedDocs = mongoTemplate.find(
